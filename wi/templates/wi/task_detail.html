@@ -1,0 +1,42 @@
+{% extends "wi/task_base.html" %}
+
+#
+# Window tab title in the browser
+#
+{% block HeadTitle %} WI:ReadOnly {% endblock %} 
+
+#
+# page title, pre navbar
+#
+{% block PageTitle %} Read Only Task Display {% endblock %} 
+
+#
+# main logic for the page
+#
+{% block mainpagedisplay %}
+    <div class="container-xxl">
+        <table class='table table-hover'>
+            <thead> 
+                <tr>
+                    <th> Priority? </th>
+                    <th> Completed? </th>
+                    <th> Description </th>
+                    <th> Area </th>
+                    <th> Created </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.priority is True %} checked {% endif %}> </td>
+                    <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.status is True %} checked {% endif %}> </td>
+                    <td> <a class="user-select-all" href='{% url "wi:wi_update" task.id %}' {{ task.id }} > {{ task.description }} </a> </td>
+                    <td> <p class="user-select-all"> {{task.area}} </p> </td>
+                    <td> <p class="user-select-none"> {{task.created | date:"M j"}} </p>  </td>
+                </tr>
+            </tbody>
+            </table>
+        <br>
+        <!-- Buttons  --->
+        <input type="submit" class='btn rounded-pill' style="background-color:#DCDCDC" onclick="window.location='{% url 'wi:wi_listview' %}'; return false;" value="Return to Task List">
+    </div>
+{% endblock%}

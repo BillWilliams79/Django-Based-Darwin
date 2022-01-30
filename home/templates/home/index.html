@@ -1,0 +1,27 @@
+{% extends "home/home_base.html" %}
+
+#
+# Window tab title in the browser
+#
+{% block HeadTitle %} Darwin {% endblock %} 
+
+#
+# page title, pre navbar
+#
+{% block PageTitle %} Welcome {% endblock %} 
+
+#
+# main logic for the page
+#
+{% block mainpagedisplay %}
+<div class="container">
+    <br>
+    <h4>tasks links</h4>
+    <ul>
+        <li> List Tasks <a href="{% url 'wi:wi_listview' %}"> wi:wi_listview </a> </li>
+        <li> Create Task <a href="{% url 'wi:wi_create' %}"> wi:wi_create </a> </li>
+        <li> Multiedit Tasks <a href="{% url 'wi:task_modelformsetfactory' %}"> wi:wi_modelformfactory </a> </li>
+
+    </ul>
+</div>
+{% endblock%}

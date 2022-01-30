@@ -1,0 +1,48 @@
+{% extends "wi/task_base.html" %}
+
+#
+# Window tab title in the browser
+#
+{% block HeadTitle %} WI:Confirm {% endblock %} 
+
+#
+# page title, pre navbar
+#
+{% block PageTitle %} Confirm Delete Task {% endblock %} 
+
+#
+# main logic for the page
+#
+{% block mainpagedisplay %}
+    <div class="container-xxl">
+        <form method="post" action="" >
+            {% csrf_token %}
+            <table class='table table-hover'>
+                <thead> 
+                    <tr>
+                        <th> Priority? </th>
+                        <th> Completed? </th>
+                        <th> Description </th>
+                        <th> Area </th>
+                        <th> Created </th>
+                        <th> Updated </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.priority is True %} checked {% endif %}> </td>
+                        <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.status is True %} checked {% endif %}> </td>
+                        <td> {{ task.description }} </td>
+                        <td> {{ task.area }} </td>
+                        <td> {{ task.created | date:"M j, o g:iA"}} </td>
+                        <td> {{ task.updated | date:"M j, o g:iA"}} </td>
+                    </tr>
+                </tbody>
+                </table>
+            <br>
+            <!-- Buttons  --->
+            <input type="submit" class='btn btn-danger btn-lg' value="Confirm Delete">
+            <input type="submit" class='btn btn-dark btn-lg' onclick="window.location='{% url 'wi:wi_listview' %}'; return false;" value="Cancel">
+        </form>
+    </div>
+{% endblock%}

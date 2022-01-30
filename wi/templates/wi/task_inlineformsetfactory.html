@@ -1,0 +1,48 @@
+{% extends "wi/task_base.html" %}
+
+{% block HeadTitle %} WI: InlineForm {% endblock %} 
+
+{% block PageTitle %}  Task InlineFormSet Factory {% endblock %} 
+
+{% block mainpagedisplay %}
+    <div class="container-xxl">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <table class='table table-hover'>
+                <thead> 
+                    <tr>
+                        {% for field in formset.form.visible_fields %}
+                            {% if field.name != "area" %}
+                                <th>{{ field.label_tag }} </th>
+                            {% endif %}
+                        {% endfor %}
+                        <th> Delete? </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for form in formset %}
+                        <tr>
+                            {% for field in form.visible_fields %}
+                                <td>{{ field }} </td>
+                            {% endfor %}
+                        </tr>                         
+                        {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <!-- Buttons  --->
+            <input type="submit" class='btn btn-dark btn-lg' value="Update All">
+            <input type="submit" class='btn btn-dark btn-lg' onclick="window.location='{% url 'wi:wi_listview' %}'; return false;" value="Cancel">
+
+            <!-- render all the hidden fields -->
+            <p>
+            {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }} <br>
+                {% endfor %}
+            {% endfor %}
+            </p>
+        </form>
+        </div>
+{% endblock%}

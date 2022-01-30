@@ -1,0 +1,42 @@
+{% extends "wi/task_base.html" %}
+
+#
+# Window tab title in the browser
+#
+{% block HeadTitle %} WI:CreateTask {% endblock %} 
+
+#
+# page title, pre navbar
+#
+{% block PageTitle %} Create a Task {% endblock %} 
+
+#
+# main logic for the page
+#
+{% block mainpagedisplay %}
+    <div class="container-xxl">
+        <form method="post" action="" >
+            {% csrf_token %}
+            <table class='table table-hover'>
+                <thead> 
+                    <tr>
+                        {% for field in form %}
+                        <th>{{ field.label_tag }} </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for field in form %}
+                        <th>{{ field }} </th>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+                </table>
+            <br>
+            <!-- Buttons  --->
+            <input type="submit" class='btn btn-dark btn' value="Create Task">
+            <input type="submit" class='btn btn-dark btn' onclick="window.location='{% url 'wi:wi_listview' %}'; return false;" value="Cancel">
+        </form>
+    </div>
+{% endblock%}

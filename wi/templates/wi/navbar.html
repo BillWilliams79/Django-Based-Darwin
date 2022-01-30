@@ -1,0 +1,48 @@
+<div class="container-xxl nav_bar_template_div">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-xxl">
+            <a class="navbar-brand" href="{% url 'home:darwin_root' %}"><i class="fa fa-bicycle" aria-hidden="true"></i> Darwin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tasks
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'wi:wi_listview' %}">List Tasks</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:wi_create' %}">Create Task</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:task_modelformsetfactory' %}">Task MultiEdit</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:task_inlineformsetfactory' %}">Inline FormSet Factory</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:cards' %}">Cards Testing</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Area MultiEdit</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:task_worksheet' %}">Task Worksheet</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Accounts
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">User Profile</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'login' %}?next={% url 'wi:wi_listview' %}">Login</a></li>
+                                <li><a class="dropdown-item" href="{% url 'users:register' %}?next={% url 'home:darwin_root' %}">Register User</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

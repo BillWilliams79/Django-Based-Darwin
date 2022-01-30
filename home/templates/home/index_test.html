@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>  WI: Area Focus   </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+    <!-- fa4 replaced by fa5 <script src="https://use.fontawesome.com/323bf370d6.js"></script> -->
+    <script src="https://kit.fontawesome.com/428beb1c82.js" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+</head>
+<body>
+    
+        <div class="container-xxl nav_bar_template_div">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-xxl">
+            <a class="navbar-brand" href="/"><i class="fa fa-bicycle" aria-hidden="true"></i> Darwin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tasks
+                        </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="/wi/">List Tasks</a></li>
+                    <li><a class="dropdown-item" href="/wi/create/">Create Task</a></li>
+                    <li><a class="dropdown-item" href="/wi/modelformfactory">Task MultiEdit</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/wi/inlineformfactory">Inline FormSet Factory</a></li>
+                    <li><a class="dropdown-item" href="/wi/cards">Cards Testing</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/wi/area">Area MultiEdit</a></li>
+                    <li><a class="dropdown-item" href="/wi/task_worksheet">Task Worksheet</a></li>
+                </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+    
+
+    <div class="container-xxl page_title_div" >
+        <br>
+        <h3 class="sticky-top bg-white" style="z-index: 1">
+              Garden Tasks 
+        </h3>
+    </div>
+
+    
+
+    
+    <div class="container-xxl area_focus_main_page">
+        <form action="" method="post">
+            <div class="container-xxl">
+                <input type="hidden" name="csrfmiddlewaretoken" value="trptabN2WMEtl9cXjHtZaYDd8Uy3LMUnAO16omqXuDRkM2fL9o8dkNk6NFVD83pt">
+                <input type="hidden" name="task_set-TOTAL_FORMS" value="22" id="id_task_set-TOTAL_FORMS"><input type="hidden" name="task_set-INITIAL_FORMS" value="12" id="id_task_set-INITIAL_FORMS"><input type="hidden" name="task_set-MIN_NUM_FORMS" value="0" id="id_task_set-MIN_NUM_FORMS"><input type="hidden" name="task_set-MAX_NUM_FORMS" value="1000" id="id_task_set-MAX_NUM_FORMS">
+            </div>
+            <table class='table table-hover'>
+                <thead> 
+                    <tr class='row'>
+                        
+                            
+                                <th class='col-1'><label for="id_priority">!</label> </th>
+                            
+                        
+                            
+                                <th class='col-1'><label for="id_status">Done:</label> </th>
+                            
+                        
+                            
+                                <th class='col-7'><label for="id_description">Description:</label> </th>
+                            
+                        
+                            
+                                <th class='col-1'><label for="id_created">Created:</label> </th>
+                            
+                        
+                            
+                                <th class='col-1'><label for="id_updated">Updated:</label> </th>
+                            
+                        
+                            
+                        
+                        <th class='col-1'> Delete? </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        
+                        <tr class='row'>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-0-priority" class="darwin_text" id="id_task_set-0-priority"> </td>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-0-status" class="darwin_text" id="id_task_set-0-status" checked> </td>
+                            
+                                <td class='col-7'><input type="text" name="task_set-0-description" value="Remove Rear Tomatoes" class="w-100 darwin_text" maxlength="100" id="id_task_set-0-description"> </td>
+                            
+                                <td class='col-1'><input type="text" name="task_set-0-created" value="Jan 08" class="darwin_text" id="id_task_set-0-created"> </td>
+                            
+                                <td class='col-1'><input type="text" name="task_set-0-updated" value="Jan 21" class="darwin_text" id="id_task_set-0-updated"> </td>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-0-DELETE" id="id_task_set-0-DELETE"> </td>
+                            
+                        </tr>                         
+                        
+                        <tr class='row'>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-1-priority" class="darwin_text" id="id_task_set-1-priority"> </td>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-1-status" class="darwin_text" id="id_task_set-1-status" checked> </td>
+                            
+                                <td class='col-7'><input type="text" name="task_set-1-description" value="Remove Celery bush (lol)" class="w-100 darwin_text" maxlength="100" id="id_task_set-1-description"> </td>
+                            
+                                <td class='col-1'><input type="text" name="task_set-1-created" value="Jan 08" class="darwin_text" id="id_task_set-1-created"> </td>
+                            
+                                <td class='col-1'><input type="text" name="task_set-1-updated" value="Jan 21" class="darwin_text" id="id_task_set-1-updated"> </td>
+                            
+                                <td class='col-1'><input type="checkbox" name="task_set-1-DELETE" id="id_task_set-1-DELETE"> </td>
+                            
+                        </tr>                         
+                        
+                        
+                </tbody>
+            </table>
+            <br>
+            <!-- Buttons  --->
+            <input type="submit" class='btn btn-dark btn-lg' value="Update All">
+            <input type="submit" class='btn btn-dark btn-lg' onclick="window.location='/wi/'; return false;" value="Cancel">
+
+            <!-- render all the hidden fields -->
+            <p>
+            
+                
+                    <input type="hidden" name="task_set-0-area" value="1" id="id_task_set-0-area"> <br>
+                
+                    <input type="hidden" name="task_set-0-id" value="1" id="id_task_set-0-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-1-area" value="1" id="id_task_set-1-area"> <br>
+                
+                    <input type="hidden" name="task_set-1-id" value="2" id="id_task_set-1-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-2-area" value="1" id="id_task_set-2-area"> <br>
+                
+                    <input type="hidden" name="task_set-2-id" value="3" id="id_task_set-2-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-3-area" value="1" id="id_task_set-3-area"> <br>
+                
+                    <input type="hidden" name="task_set-3-id" value="4" id="id_task_set-3-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-4-area" value="1" id="id_task_set-4-area"> <br>
+                
+                    <input type="hidden" name="task_set-4-id" value="10" id="id_task_set-4-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-5-area" value="1" id="id_task_set-5-area"> <br>
+                
+                    <input type="hidden" name="task_set-5-id" value="14" id="id_task_set-5-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-6-area" value="1" id="id_task_set-6-area"> <br>
+                
+                    <input type="hidden" name="task_set-6-id" value="15" id="id_task_set-6-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-7-area" value="1" id="id_task_set-7-area"> <br>
+                
+                    <input type="hidden" name="task_set-7-id" value="16" id="id_task_set-7-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-8-area" value="1" id="id_task_set-8-area"> <br>
+                
+                    <input type="hidden" name="task_set-8-id" value="31" id="id_task_set-8-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-9-area" value="1" id="id_task_set-9-area"> <br>
+                
+                    <input type="hidden" name="task_set-9-id" value="39" id="id_task_set-9-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-10-area" value="1" id="id_task_set-10-area"> <br>
+                
+                    <input type="hidden" name="task_set-10-id" value="44" id="id_task_set-10-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-11-area" value="1" id="id_task_set-11-area"> <br>
+                
+                    <input type="hidden" name="task_set-11-id" value="54" id="id_task_set-11-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-12-area" value="1" id="id_task_set-12-area"> <br>
+                
+                    <input type="hidden" name="task_set-12-id" id="id_task_set-12-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-13-area" value="1" id="id_task_set-13-area"> <br>
+                
+                    <input type="hidden" name="task_set-13-id" id="id_task_set-13-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-14-area" value="1" id="id_task_set-14-area"> <br>
+                
+                    <input type="hidden" name="task_set-14-id" id="id_task_set-14-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-15-area" value="1" id="id_task_set-15-area"> <br>
+                
+                    <input type="hidden" name="task_set-15-id" id="id_task_set-15-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-16-area" value="1" id="id_task_set-16-area"> <br>
+                
+                    <input type="hidden" name="task_set-16-id" id="id_task_set-16-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-17-area" value="1" id="id_task_set-17-area"> <br>
+                
+                    <input type="hidden" name="task_set-17-id" id="id_task_set-17-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-18-area" value="1" id="id_task_set-18-area"> <br>
+                
+                    <input type="hidden" name="task_set-18-id" id="id_task_set-18-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-19-area" value="1" id="id_task_set-19-area"> <br>
+                
+                    <input type="hidden" name="task_set-19-id" id="id_task_set-19-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-20-area" value="1" id="id_task_set-20-area"> <br>
+                
+                    <input type="hidden" name="task_set-20-id" id="id_task_set-20-id"> <br>
+                
+            
+                
+                    <input type="hidden" name="task_set-21-area" value="1" id="id_task_set-21-area"> <br>
+                
+                    <input type="hidden" name="task_set-21-id" id="id_task_set-21-id"> <br>
+                
+            
+            </p>
+        </form>
+        </div>
+
+</body>
+</html>
+

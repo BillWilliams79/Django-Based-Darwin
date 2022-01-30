@@ -1,0 +1,26 @@
+{% extends "wi/task_base.html" %}
+
+
+{% block HeadTitle %} Darwin: Register User{% endblock %} 
+
+{% block PageTitle %} Register New User {% endblock %} 
+
+{% block mainpagedisplay %}
+{% load crispy_forms_tags %}
+    <div class="container-xxl">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <br>
+            <div class="form-group">
+                <button class="btn btn-dark" type="submit">Sign Up</button>
+            </div>
+            <br>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Already Have An Account? <a class="ml-2" href="#">Log in</a>
+            </small>
+        </div>
+    </div>
+{% endblock%}
