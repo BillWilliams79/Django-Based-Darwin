@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import ast
+import django_heroku
 
 
 MESSAGE_TAGS = {
@@ -24,9 +25,8 @@ SECRET_KEY = os.environ.get('DARWIN_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DARWIN_DEBUG')
-#DEBUG = True
 
-#ALLOWED_HOSTS = ['127.0.0.1',]
+#literal_eval converts the string that looks like a list into a list.
 ALLOWED_HOSTS = ast.literal_eval(os.environ.get('DARWIN_HOSTS'))
 
 
@@ -146,3 +146,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+django_heroku.settings(locals())
