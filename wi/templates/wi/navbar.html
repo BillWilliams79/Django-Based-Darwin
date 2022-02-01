@@ -12,20 +12,21 @@
                             Tasks
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'wi:wi_listview' %}">List Tasks</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:wi_create' %}">Create Task</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:task_modelformsetfactory' %}">Task MultiEdit</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:task_inlineformsetfactory' %}">Inline FormSet Factory</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:cards' %}">Cards Testing</a></li>
-                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Area MultiEdit</a></li>
                             <li><a class="dropdown-item" href="{% url 'wi:task_worksheet' %}">Task Worksheet</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:wi_create' %}">Create Task</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            {% if user.is_authenticated %}
+            <li><a class="nav-item navbar-link" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+            <li><a class="navbar-link" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
+            {% endif %}
+            </div>
+            {% comment %} <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -42,7 +43,7 @@
                         </ul>
                     </li>
                 </ul>
-            </div>
+            </div> {% endcomment %}
         </div>
     </nav>
 </div>

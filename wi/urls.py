@@ -22,7 +22,7 @@ urlpatterns = [
     path('area', views.area_multiedit, name='area_multiedit'),
     path('task_worksheet', views.task_worksheet, name='task_worksheet'), # template = task_worksheet.html
     path('areafocus/<slug:area_name>', views.area_focus, name='task_areafocus'), # template = task_areafocus.html
-  #  path('task_playground', views.task_playground.as_view(), name='task_playground'), # template = task_playground.html
+#    path('task_playground', views.task_playground.as_view(), name='task_playground'), # template = task_playground.html
 
   #
   # / - <object>_roda: read only display all 

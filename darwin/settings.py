@@ -24,7 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DARWIN_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DARWIN_DEBUG')
+# environment variable are strings only, so this converts it to a bool
+# should find a more direct and obvious way like for allowed_hosts
+DEBUG = (os.environ.get('DARWIN_DEBUG') == 'True')
 
 #literal_eval converts the string that looks like a list into a list.
 ALLOWED_HOSTS = ast.literal_eval(os.environ.get('DARWIN_HOSTS'))
