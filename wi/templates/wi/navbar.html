@@ -19,15 +19,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            {% comment %} <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             {% if user.is_authenticated %}
             <li><a class="nav-item navbar-link" href="{% url 'logout' %}">Logout</a></li>
             {% else %}
-            <li><a class="navbar-link" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
+            <li><a class="nav-item navbar-link" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
             {% endif %}
-            </div>
-            {% comment %} <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </div> {% endcomment %}
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Accounts
@@ -43,7 +43,7 @@
                         </ul>
                     </li>
                 </ul>
-            </div> {% endcomment %}
+            </div>
         </div>
     </nav>
 </div>
