@@ -8,7 +8,7 @@ app_name = 'home'
 
 urlpatterns = [
     #
-    # List View - CRUD paths
+    # home page
     #
     path('', TemplateView.as_view(template_name='home/index.html'), name="darwin_root"),
  ]

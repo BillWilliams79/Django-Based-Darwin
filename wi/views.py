@@ -219,6 +219,15 @@ def area_multiedit(request):
             #
             # We have good data, save and return to listview
             #
+            # but first scan the formsets and instatiate the user that created the task
+            # originally tried to used the form or the cleaned data, and of course the
+            # model doesn't incldue createdby. however the form does refer to the instance
+            # and so that can be modified.
+            #
+            for form in formset:
+                if not form.instance.created_by:
+                    form.instance.created_by = request.user
+
             formset.save()
             return redirect(reverse('wi:area_multiedit'), {'formset': formset})
         else:
@@ -232,7 +241,7 @@ def area_multiedit(request):
         # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
         # pass to template for render
         #
-        formset = area_multiedit_formset()
+        formset = area_multiedit_formset(queryset=area.objects.filter(created_by=request.user))
 
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
 

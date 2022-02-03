@@ -80,6 +80,12 @@ class area(models.Model):
                 blank = False,
     )
 
+    created_by = models.ForeignKey(
+                settings.AUTH_USER_MODEL,
+                on_delete=models.SET_NULL,
+                null = True,
+    )
+    
     created = models.DateTimeField(
                 null = True,
                 blank = True,
