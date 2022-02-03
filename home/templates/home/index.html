@@ -14,14 +14,12 @@
 # main logic for the page
 #
 {% block mainpagedisplay %}
-<div class="container">
+<div class="container-xxl">
     <br>
-    <h4>tasks links</h4>
+    <h4>Task Management</h4>
     <ul>
-        <li> List Tasks <a href="{% url 'wi:wi_listview' %}"> wi:wi_listview </a> </li>
-        <li> Create Task <a href="{% url 'wi:wi_create' %}"> wi:wi_create </a> </li>
-        <li> Multiedit Tasks <a href="{% url 'wi:task_modelformsetfactory' %}"> wi:wi_modelformfactory </a> </li>
-
+        <li> List Tasks <a href="{% url 'wi:task_worksheet' %}"> Worksheet View </a> </li>
+        <li> Create Task <a href="{% url 'wi:area_multiedit' %}"> Edit Task Areas </a> </li>
     </ul>
 </div>
 {% endblock%}

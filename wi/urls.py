@@ -17,8 +17,7 @@ urlpatterns = [
     path('<int:pk>/update', views.wi_update.as_view(), name = 'wi_update'), # template = task_form.html
     path('<int:pk>/delete', views.wi_delete.as_view(), name = 'wi_delete'), # template = task_confirm_delete.html
     path('modelformfactory', views.task_modelformsetfactory, name='task_modelformsetfactory'), # template = task_modelformsetfactory.html
-    path('inlineformfactory', views.task_inlineformsetfactory, name='task_inlineformsetfactory'), # template = task_inlineformsetfactory.html
-    path('cards', views.card_investigation, name="cards"),
+#    path('inlineformfactory', views.task_inlineformsetfactory, name='task_inlineformsetfactory'), # template = task_inlineformsetfactory.html
     path('area', views.area_multiedit, name='area_multiedit'),
     path('task_worksheet', views.task_worksheet, name='task_worksheet'), # template = task_worksheet.html
     path('areafocus/<slug:area_name>', views.area_focus, name='task_areafocus'), # template = task_areafocus.html

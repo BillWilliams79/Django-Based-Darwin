@@ -19,6 +19,13 @@ from .forms import AreaMultiEditForm, WorkSheetForm, AreaFocusForm
 #
 class wi_listview(LoginRequiredMixin, ListView):
     model = task
+
+    #
+    # hook get_queryset to limit access to tasks created by the logged in user
+    #
+    def get_queryset(self):
+        q = super(wi_listview, self).get_queryset()
+        return q.filter(created_by=self.request.user)
  
 #
 # CREATE CRUD for task
@@ -39,6 +46,15 @@ class wi_create(LoginRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, f'New {self.object.area}  task added.')
         return reverse_lazy('wi:wi_listview')
 
+    #
+    # use form_valid to catch and set created_by to the logged in user. Works becuase it's
+    # CreateView class based. Link below. This is readily extended to non-class views.
+    # https://docs.djangoproject.com/en/4.0/topics/class-based-views/generic-editing/#models-and-request-user
+    #
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
 #
 # READ CRUD for task
 # template: wi/task_detail.html - context contains object, not form
@@ -46,6 +62,14 @@ class wi_create(LoginRequiredMixin, CreateView):
 class wi_read(LoginRequiredMixin, DetailView):
     model = task
     fields = '__all__'
+
+    #
+    # hook get_queryset to limit access to tasks created by the logged in user
+    # TODO: as this is a single read view, user will get error 404 if they try to read another user's
+    # data perhaps we could do something smarter...
+    def get_queryset(self):
+        q = super(wi_read, self).get_queryset()
+        return q.filter(created_by=self.request.user)
 
 #
 # UPDATE CRUD for task
@@ -103,7 +127,6 @@ def task_modelformsetfactory(request):
     task_modelformset = modelformset_factory(
                             task,
                             form=TaskModelFormsetFactoryModelForm, 
-                            #fields=('priority', 'description', 'status', 'created', 'area'),
                             extra=4,
                             can_delete = True,
                         )
@@ -114,6 +137,15 @@ def task_modelformsetfactory(request):
             #
             # We have good data, save and return to listview
             #
+            # but first scan the formsets and instatiate the user that created the task
+            # originally tried to used the form or the cleaned data, and of course the
+            # model doesn't incldue createdby. however the form does refer to the instance
+            # and so that can be modified.
+            #
+            for form in formset:
+                if not form.instance.created_by:
+                    form.instance.created_by = request.user
+
             formset.save()
             return redirect(reverse('wi:wi_listview'))
         else:
@@ -127,7 +159,7 @@ def task_modelformsetfactory(request):
         # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
         # pass to template for render
         #
-        formset = task_modelformset()
+        formset = task_modelformset(queryset=task.objects.filter(created_by=request.user))
 
     return render(request, 'wi/task_modelformsetfactory.html', {'formset': formset})
 
@@ -139,7 +171,6 @@ def task_inlineformsetfactory(request):
     task_inlineformset = inlineformset_factory(
                                                 area,
                                                 task,form=TaskInlineFormsetFactoryModelForm,
-#                                                fields=('priority', 'status', 'description', 'created',),
                                                 extra=2,
                                                 can_delete=True,
                                             )
@@ -166,79 +197,6 @@ def task_inlineformsetfactory(request):
         formset = task_inlineformset(instance=inlinearea)
 
     return render(request, 'wi/task_inlineformsetfactory.html', {'formset': formset})
-
-@login_required
-def card_investigation(request):
-    garden_task = inlineformset_factory(
-                                        area,
-                                        task,
-                                        form=GardenTaskInlineFormsetFactoryModelForm, 
-                                        extra=2,
-                                        can_delete = False,
-                                        )
-
-    home_task = inlineformset_factory(
-                                    area,
-                                    task,
-                                    form=GardenTaskInlineFormsetFactoryModelForm, 
-                                    extra=2,
-                                    can_delete = False,
-                                    )
-
-    bike_task = inlineformset_factory(
-                                    area,
-                                    task,
-                                    form=GardenTaskInlineFormsetFactoryModelForm, 
-                                    extra=2,
-                                    can_delete = False,
-                                    )
-    if request.method == 'POST':
-        #
-        # cooltip: test for which button was pressed uses the html button's name field. 
-        #          Check if the html button name is in POST and you'll know if it was pressed.
-        #
-        if 'garden_update' in request.POST:
-            formset = garden_task(request.POST, request.FILES, instance=area.objects.get(name='Garden'))
-            area_modified = 'Garden'
-        
-        if 'home_update' in request.POST:
-            formset = home_task(request.POST, request.FILES, instance=area.objects.get(name='Home'))
-            area_modified = 'Home'
-        
-        if 'bike_update' in request.POST:
-            formset = home_task(request.POST, request.FILES, instance=area.objects.get(name='Bike'))
-            area_modified = 'Bike'
-
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'{area_modified} tasks updated successfully')
-            return redirect(reverse('wi:cards'))
-        else:
-            #
-            # form invalid could be many things...
-            #
-            messages.add_message(request, messages.ERROR, f'{area_modified} changes not saved. {formset.non_form_errors()}')
-            return redirect(reverse('home:darwin_root'))
-    else:
-        #
-        # Otherwise, its a GET method call, create the TaskFormset and 
-        # pass to dispaly template
-        #
-        garden_area = area.objects.get(name='Garden')
-        home_area = area.objects.get(name='Home')
-        bike_area = area.objects.get(name='Bike')
-        garden_formset = garden_task(instance=garden_area)
-        home_formset = home_task(instance=home_area)
-        bike_formset = bike_task(instance=bike_area)
-
-    return render(request, 'wi/card_investigation.html', {
-                                                            'garden_formset': garden_formset,
-                                                            'home_formset': home_formset,
-                                                            'bike_formset': bike_formset }
-                )
 
 #
 # MULTI-EDIT for Area
@@ -288,7 +246,7 @@ def task_worksheet(request):
     #
     area_list = list(area.objects.values_list('name', flat=True))
     #
-    # formsetfactor for use throughout
+    # formsetfactory for use throughout
     #
     formsetfactory = inlineformset_factory(
                                     area,
@@ -325,6 +283,15 @@ def task_worksheet(request):
                 #
                 # We have good data, save and return to listview
                 #
+                # but first scan the formsets and instatiate the user that created the task
+                # originally tried to used the form or the cleaned data, and of course the
+                # model doesn't incldue createdby. however the form does refer to the instance
+                # and so that can be modified.
+                #
+                for form in formset:
+                    if not form.instance.created_by:
+                        form.instance.created_by = request.user
+
                 formset.save()
                 messages.add_message(request, messages.SUCCESS, f'{clicked_area} tasks updated successfully')
                 #Previously return to home_root,but would rather stay in worksheet. Hence just drop through to render below.
@@ -345,7 +312,7 @@ def task_worksheet(request):
     #
     form_list = list()
     for area_name in area_list:
-        form_list.append(formsetfactory(instance=area.objects.get(name=area_name)))
+        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user), instance=area.objects.get(name=area_name)))
     # zip lists together so then can be mutually iterated in the template
     area_form_list = zip(area_list, form_list)
 
@@ -373,6 +340,9 @@ def area_focus(request, area_name):
             #
             # We have good data, save and return to listview
             #
+            for form in formset:
+                if not form.instance.created_by:
+                    form.instance.created_by = request.user
             formset.save()
             messages.add_message(request, messages.SUCCESS, f'tasks updated successfully')
             return redirect(reverse_lazy('wi:task_areafocus', args=(area_name,)))
@@ -387,7 +357,7 @@ def area_focus(request, area_name):
         # Create formset using specified object
         #
         area_object = area.objects.get(name=area_name)
-        formset = area_formset_factory(instance=area_object)
+        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user), instance=area_object)
 
     return render(
                     request, 

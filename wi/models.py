@@ -1,6 +1,7 @@
 from django.db import models
 #from django.core.validators import MinLengthValidator
 from django.utils import timezone
+from django.conf import settings
 #from django import utils
 # Create your models here.
 
@@ -29,7 +30,13 @@ class task(models.Model):
     area = models.ForeignKey(
                 'area',
                 on_delete=models.SET_NULL,
-                null = True
+                null = True,
+    )
+
+    created_by = models.ForeignKey(
+                settings.AUTH_USER_MODEL,
+                on_delete=models.SET_NULL,
+                null = True,
     )
 
     created = models.DateTimeField(

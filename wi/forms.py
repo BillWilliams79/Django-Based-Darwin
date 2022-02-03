@@ -14,6 +14,21 @@ class TaskCreateModelForm(ModelForm):
     class Meta:
         model = task
         fields = ['priority', 'area', 'description', ]
+        # example setting html label, help text and error messages in a form
+        # of couse the helptext is not displayed because the template doesn't render it
+        labels = {
+            'area': ('Task Area'),
+        }
+        help_texts = {
+            'area': ('Logical grouping of your tasks'),
+        }
+        error_messages = {
+            'description': {
+                'max_length': ("Task descriptions should be very brief, hence limited to 100 characters"),
+            },
+        }
+        # example using widgets to set HTML attributes and (potentially) override the the 
+        # default django widget for your model field.
         widgets = {
             'description' : TextInput(attrs={
                                             'class' : 'w-100 text-reset',
