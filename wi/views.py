@@ -206,7 +206,7 @@ def area_multiedit(request):
     #
     # function based implementation of modelformsetfactory
     #
-    area_multiedit_formset = modelformset_factory(
+    area_factory = modelformset_factory(
                                 area,
                                 form=AreaMultiEditForm, 
                                 extra=4,
@@ -214,7 +214,7 @@ def area_multiedit(request):
                             )
 
     if request.method == 'POST':
-        formset = area_multiedit_formset(request.POST, request.FILES)
+        formset = area_factory(request.POST, request.FILES)
         if formset.is_valid():
             #
             # We have good data, save and return to listview
@@ -241,7 +241,7 @@ def area_multiedit(request):
         # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
         # pass to template for render
         #
-        formset = area_multiedit_formset(queryset=area.objects.filter(created_by=request.user))
+        formset = area_factory(queryset=area.objects.filter(created_by=request.user))
 
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
 
@@ -251,9 +251,11 @@ def area_multiedit(request):
 @login_required
 def task_worksheet(request):
     #
-    # Create list of area names
+    # Create list of area names. The case of user with no areas handled in template
+    # .values_list(): https://docs.djangoproject.com/en/stable/ref/models/querysets/#values-list
     #
-    area_list = list(area.objects.values_list('name', flat=True))
+    area_list = list(area.objects.filter(created_by=request.user).values_list('name', flat=True))
+
     #
     # formsetfactory for use throughout
     #
@@ -324,8 +326,10 @@ def task_worksheet(request):
         form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user), instance=area.objects.get(name=area_name)))
     # zip lists together so then can be mutually iterated in the template
     area_form_list = zip(area_list, form_list)
+    # convert to list so django template can use |length filter (hack)
+    afl = list(area_form_list)
 
-    return render(request, 'wi/task_worksheet.html', { 'area_form_list' : area_form_list })
+    return render(request, 'wi/task_worksheet.html', { 'area_form_list' : afl })
 
 #
 # FOCUS VIEW for Tasks from a single Area

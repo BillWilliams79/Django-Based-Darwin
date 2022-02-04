@@ -6,55 +6,61 @@
 
 {% block mainpagedisplay %}
 <div class="container-xxl border">
-    <div class="row gx-4 gy-4 row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3", style="overflow: hidden">
-
-        {% for area_name, area_form in area_form_list %}
-        <div class="col card">
-            <div class="card-body">
-                <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_name %}", style="text-decoration: none; color: black"> {{area_name}} Tasks</a> </h5>
-                <p class="card-text">
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        {{ area_form.management_form }}
-                        <table class='table table-hover table-sm'>
-                            <thead> 
-                                <tr>
-                                    {% for field in area_form.form.visible_fields %}
-                                        {% if field.name != "area" %}
-                                            <th>{{ field.label_tag }} </th>
-                                        {% endif %}
-                                    {% endfor %}    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    {% for form in area_form %}
+    {% if area_form_list|length == 0 %}
+        <br>
+        <p> No task Areas defined. Areas are required to track and manage tasks. Please add Areas to continue. </p>
+        <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:area_multiedit' %}'; return false;" value="Edit Areas">
+        <br>
+        <br>
+    {% else %}
+        <div class="row gx-4 gy-4 row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3", style="overflow: hidden">
+            {% for area_name, area_form in area_form_list %}
+            <div class="col card">
+                <div class="card-body">
+                    <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_name %}", style="text-decoration: none; color: black"> {{area_name}} Tasks</a> </h5>
+                    <p class="card-text">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {{ area_form.management_form }}
+                            <table class='table table-hover table-sm'>
+                                <thead> 
                                     <tr>
-                                        {% for field in form.visible_fields %}
-                                            <td>{{ field }} </td>
+                                        {% for field in area_form.form.visible_fields %}
+                                            {% if field.name != "area" %}
+                                                <th>{{ field.label_tag }} </th>
+                                            {% endif %}
+                                        {% endfor %}    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% for form in area_form %}
+                                        <tr>
+                                            {% for field in form.visible_fields %}
+                                                <td>{{ field }} </td>
+                                            {% endfor %}
+                                        </tr>                         
                                         {% endfor %}
-                                    </tr>                         
-                                    {% endfor %}
-                            </tbody>
-                        </table>
-                        <br>
-                        <!-- Buttons  --->
-                        <input type="submit" name="{{area_name | lower}}" class='btn btn-dark btn' value="Update">
-                        <!-- <button name="garden_update" class='btn btn-primary btn-lg' id="garden_update">Update</button> -->
-                        
-                        <!-- render all the hidden fields -->
-                        <p>
-                        {% for form in area_form %}
-                            {% for hidden in form.hidden_fields %}
-                                {{ hidden }}
+                                </tbody>
+                            </table>
+                            <br>
+                            <!-- Buttons  --->
+                            <input type="submit" name="{{area_name | lower}}" class='btn btn-dark btn' value="Update">
+                            <!-- <button name="garden_update" class='btn btn-primary btn-lg' id="garden_update">Update</button> -->
+                            
+                            <!-- render all the hidden fields -->
+                            <p>
+                            {% for form in area_form %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </p>
-                    </form>                        
-                </p>
+                            </p>
+                        </form>                        
+                    </p>
+                </div>
             </div>
-        </div>
         {% endfor %}
-
     </div>
-</div>
+    {% endif %}
+ </div>
 {% endblock%}

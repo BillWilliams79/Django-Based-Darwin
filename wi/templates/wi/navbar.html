@@ -12,8 +12,8 @@
                             Tasks
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Area MultiEdit</a></li>
                             <li><a class="dropdown-item" href="{% url 'wi:task_worksheet' %}">Task Worksheet</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Area MultiEdit</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -36,7 +36,7 @@
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                                 <li><a class="dropdown-item" href="{% url 'users:profile' %}">User Profile</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="{% url 'login' %}?next={% url 'wi:wi_listview' %}">Login</a></li>
+                                <li><a class="dropdown-item" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
                                 <li><a class="dropdown-item" href="{% url 'users:register' %}?next={% url 'home:darwin_root' %}">Register User</a></li>
                             {% endif %}
                         </ul>
