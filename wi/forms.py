@@ -72,7 +72,7 @@ class TaskInlineFormsetFactoryModelForm(ModelForm):
 class AreaFocusForm(ModelForm):
     class Meta:
         model = task
-        fields = ['priority', 'status', 'description', 'created', 'updated' ]
+        fields = ['priority', 'status', 'area', 'description', ]
         widgets = {
             'priority' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
@@ -81,10 +81,8 @@ class AreaFocusForm(ModelForm):
             'description' : TextInput(attrs={'class' : 'w-100 darwin_text',}),
 
             #'created' : DateTimeInput(attrs={'class' : 'darwin_text',}, format='%b %d'),
-            'created' : DateTimeInput(attrs={'class' : 'darwin_text',}, ),
 
             #'updated' : DateTimeInput(attrs={'class' : 'darwin_text',}, format='%b %d'),
-            'updated' : DateTimeInput(attrs={'class' : 'darwin_text',}, ),
         }
 
 class GardenTaskInlineFormsetFactoryModelForm(ModelForm):
