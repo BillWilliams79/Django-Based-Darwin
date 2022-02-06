@@ -336,18 +336,19 @@ def task_worksheet(request):
 #
 @login_required
 def area_focus(request, area_name):
-    area_formset_factory = inlineformset_factory(
-                                                area,
-                                                task,
+
+    area_obj = area.objects.get(name=area_name)
+
+    area_formset_factory = modelformset_factory(task,
                                                 form=AreaFocusForm,
-                                                extra=10,
+                                                extra=5,
                                                 can_delete=True,
                                             )
     if request.method == 'POST':
         formset = area_formset_factory(
                                         request.POST, 
                                         request.FILES, 
-                                        instance=area.objects.get(name=area_name)
+                                        queryset=task.objects.filter(created_by=request.user).filter(area=area_obj.id)
                                     )
         if formset.is_valid():
             #
@@ -356,8 +357,9 @@ def area_focus(request, area_name):
             for form in formset:
                 if not form.instance.created_by:
                     form.instance.created_by = request.user
+            
             formset.save()
-            messages.add_message(request, messages.SUCCESS, f'tasks updated successfully')
+            messages.add_message(request, messages.SUCCESS, f'Tasks updated successfully')
             return redirect(reverse_lazy('wi:task_areafocus', args=(area_name,)))
         else:
             #
@@ -370,12 +372,7 @@ def area_focus(request, area_name):
         # Create formset using specified object
         #
         area_object = area.objects.get(name=area_name)
-        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user), instance=area_object)
+        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user).filter(area=area_obj.id))
 
-    return render(
-                    request, 
-                    'wi/area_focus.html', {
-                                            'area_name' : area_name,
-                                            'formset': formset
-                                        }
-                )
+    return render(request, 'wi/area_focus.html', {'area_name' : area_name,
+                                                    'formset': formset } )

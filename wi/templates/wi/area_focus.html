@@ -15,9 +15,7 @@
                 <thead> 
                     <tr>
                         {% for field in formset.form.visible_fields %}
-                            {% if field.name != "area" %}
-                                <th>{{ field.label_tag }} </th>
-                            {% endif %}
+                            <th>{{ field.label_tag }} </th>
                         {% endfor %}
                         <th class='col'> Delete? </th>
                     </tr>
