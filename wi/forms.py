@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Textarea, CharField, TextInput, BooleanField, CheckboxInput, DateTimeInput, DateInput, TimeInput
+from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField
 from .models import task, area
 import datetime
 
@@ -70,6 +70,13 @@ class TaskInlineFormsetFactoryModelForm(ModelForm):
         }
 
 class AreaFocusForm(ModelForm):
+
+    #
+    # placing area here allows us to override its query set in the view code
+    # to limit based on created_by
+    #     
+    area = ModelChoiceField(queryset = area.objects.all())
+    
     class Meta:
         model = task
         fields = ['priority', 'status', 'area', 'description', ]
