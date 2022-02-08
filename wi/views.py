@@ -255,6 +255,7 @@ def task_worksheet(request):
     # .values_list(): https://docs.djangoproject.com/en/stable/ref/models/querysets/#values-list
     #
     area_list = list(area.objects.filter(created_by=request.user).values_list('name', flat=True))
+    success_areas = list()
 
     #
     # formsetfactory for use throughout
@@ -271,49 +272,56 @@ def task_worksheet(request):
     # First handle post case (where one of the forms requires updating)
     #
     if request.method == 'POST':
-        clicked_area = ''
-    
+        #
+        # iterate through all formset, one for each area
+        #
         for area_name in area_list:
-            if area_name.lower() in request.POST:
-                clicked_area = area_name
-                break
-            else:
-                continue
-         
-        if clicked_area == '':
-
             #
-            # somehow received post without a button click so will log an error
+            # create formset for each area. Prefix required when using more than one formset per page.
             #
-            messages.add_message(request, messages.ERROR, f' No area button was clicked, no data saved.')
-            return redirect(reverse('home:darwin_root'))            
-        else:
-            formset = formsetfactory(request.POST, request.FILES, instance=area.objects.get(name=clicked_area))
+            formset = formsetfactory(request.POST,
+                                    request.FILES,
+                                    prefix = area_name,
+                                    instance=area.objects.get(name=area_name),
+                                    )
+            #
+            # parse/handle only those formset that changed
+            #
+            if formset.has_changed(): 
+                #
+                # handle data valid vs invalid
+                #
+                if formset.is_valid():
+                    #
+                    # We have good data, save and return to listview
+                    #
+                    # but first scan the formsets and instatiate the user that created the task
+                    # originally tried to used the form or the cleaned data, and of course the
+                    # model doesn't incldue createdby. however the form does refer to the instance
+                    # and so that can be modified.
+                    #
+                    for form in formset:
+                        if not form.instance.created_by:
+                            form.instance.created_by = request.user
 
-            if formset.is_valid():
-                #
-                # We have good data, save and return to listview
-                #
-                # but first scan the formsets and instatiate the user that created the task
-                # originally tried to used the form or the cleaned data, and of course the
-                # model doesn't incldue createdby. however the form does refer to the instance
-                # and so that can be modified.
-                #
-                for form in formset:
-                    if not form.instance.created_by:
-                        form.instance.created_by = request.user
+                    formset.save()
+                    success_areas.append(area_name)
 
-                formset.save()
-                messages.add_message(request, messages.SUCCESS, f'{clicked_area} tasks updated successfully')
-                #Previously return to home_root,but would rather stay in worksheet. Hence just drop through to render below.
-                #return redirect(reverse('wi:task_worksheet'))
+                else:
+                    #
+                    # form invalid could be many things...
+                    #
+                    messages.add_message(request, messages.ERROR, f'{area_name} changes not saved. {formset.non_form_errors()}')
+
             else:
                 #
-                # form invalid could be many things...
+                # else pass for formset where data didn't change, can delete this later
                 #
-                messages.add_message(request, messages.ERROR, f'{clicked_area} changes not saved. {formset.non_form_errors()}')
-                #Previously return to home_root,but would rather stay in worksheet. Hence just drop through to render below.
-                #return redirect(reverse('wi:task_worksheet'))
+                pass
+
+        if success_areas:
+            areas_string = ', '.join(str(a) for a in success_areas)
+            messages.add_message(request, messages.SUCCESS, f'{areas_string} tasks updated successfully')
 
     #
     # Otherwise, its a GET method call, create the TaskFormset and 
@@ -323,8 +331,12 @@ def task_worksheet(request):
     #
     form_list = list()
     for area_name in area_list:
-        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user), instance=area.objects.get(name=area_name)))
+        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user),
+                                        prefix = area_name,
+                                        instance=area.objects.get(name=area_name)))
+    #
     # zip lists together so then can be mutually iterated in the template
+    #
     area_form_list = zip(area_list, form_list)
     # convert to list so django template can use |length filter (hack)
     afl = list(area_form_list)
