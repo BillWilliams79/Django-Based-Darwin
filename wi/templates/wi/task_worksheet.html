@@ -2,60 +2,80 @@
 
 {% block HeadTitle %} WI:Worksheet {% endblock %} 
 
-{% block PageTitle %} Tasks Worksheet {% endblock %} 
+{% block PageTitle %}  {% endblock %} 
 
 {% block mainpagedisplay %}
-<div class="container-xxl border">
-    {% if area_form_list|length == 0 %}
+<div class="container-xxl">
+    {% if not domain_count %}
+    <form action="" method="post">
         <br>
-        <p> No task Areas defined. Areas are required to track and manage tasks. Please add Areas to continue. </p>
-        <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:area_multiedit' %}'; return false;" value="Edit Areas">
+        <p> No domains areas defined for this account. Domains and areas are required to track and manage tasks. Please add one or more domains to continue. </p>
+        <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:domain_multiedit' %}'; return false;" value="Edit Domains">
         <br>
         <br>
+    </form>
     {% else %}
         <form action="" method="post">
+            <br>
+            <h3 class="bg-white" style="z-index: 1; margin-bottom: 20px">
+                {% if domain_count > 1 %}
+                    <button type="submit" name="domain_left" class='btn btn-dark btn-sm'> <i class="far fa-arrow-left"></i> </button> 
+                {% endif %}
+                {{ domain_name }} Tasks Worksheet
+                {% if domain_count > 1 %}
+                    <button type="submit" name="domain_right" class='btn btn-dark btn-sm'> <i class="fas fa-arrow-right"></i> </button>
+                {% endif %}
+            </h3>
             {% csrf_token %}
-            <div class="row gx-4 gy-4 row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3", style="overflow: hidden">
-                {% for area_name, area_form in area_form_list %}
-                    <div class="col card">
-                        <div class="card-body">
-                            <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_name %}", style="text-decoration: none; color: black"> {{area_name}} Tasks</a> </h5>
-                            <p class="card-text">
-                                {{ area_form.management_form }}
-                                <table class='table table-hover table-sm'>
-                                    <thead> 
-                                        <tr>
-                                            {% for field in area_form.form.visible_fields %}
-                                                {% if field.name != "area" %}
-                                                    <th>{{ field.label_tag }} </th>
-                                                {% endif %}
-                                            {% endfor %}    
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                            {% for form in area_form %}
+            {% if area_form_list|length == 0 %}
+                <br>
+                <p> No task areas defined for this domain. Areas are required to track and manage tasks. Please add Areas to continue. </p>
+                <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:area_multiedit' %}'; return false;" value="Edit Areas">
+                <br>
+                <br>
+            {% else %}
+                <div class="row gx-4 gy-4 row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3", style="overflow: hidden">
+                    {% for area_obj, area_form in area_form_list %}
+                        <div class="col card">
+                            <div class="card-body">
+                                <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks</a> </h5>
+                                <p class="card-text">
+                                    {{ area_form.management_form }}
+                                    <table class='table table-hover table-sm'>
+                                        <thead> 
                                             <tr>
-                                                {% for field in form.visible_fields %}
-                                                    <td>{{ field }} </td>
+                                                {% for field in area_form.form.visible_fields %}
+                                                    {% if field.name != "area" %}
+                                                        <th>{{ field.label_tag }} </th>
+                                                    {% endif %}
+                                                {% endfor %}    
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                {% for form in area_form %}
+                                                <tr>
+                                                    {% for field in form.visible_fields %}
+                                                        <td>{{ field }} </td>
+                                                    {% endfor %}
+                                                </tr>                         
                                                 {% endfor %}
-                                            </tr>                         
-                                            {% endfor %}
-                                    </tbody>
-                                </table>
-                                <br>
-                                <input type="submit" name="{{area_name | lower}}" class='btn btn-dark btn' value="Update All">
-                                <p>
-                                {% for form in area_form %}
-                                    {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
+                                        </tbody>
+                                    </table>
+                                    <br>
+                                    <input type="submit" name="{{area_obj.name | lower}}" class='btn btn-dark btn' value="Update All">
+                                    <p>
+                                    {% for form in area_form %}
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
                                     {% endfor %}
-                                {% endfor %}
-                                </p>            
-                            </p>
+                                    </p>            
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </form>
     {% endif %}
  </div>

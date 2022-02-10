@@ -19,8 +19,9 @@ urlpatterns = [
     path('modelformfactory', views.task_modelformsetfactory, name='task_modelformsetfactory'), # template = task_modelformsetfactory.html
 #    path('inlineformfactory', views.task_inlineformsetfactory, name='task_inlineformsetfactory'), # template = task_inlineformsetfactory.html
     path('area', views.area_multiedit, name='area_multiedit'),
+    path('domain', views.domain_multiedit, name='domain_multiedit'),
     path('task_worksheet', views.task_worksheet, name='task_worksheet'), # template = task_worksheet.html
-    path('areafocus/<slug:area_name>', views.area_focus, name='task_areafocus'), # template = task_areafocus.html
+    path('areafocus/<int:pk>', views.area_focus, name='task_areafocus'), # template = task_areafocus.html
 #    path('task_playground', views.task_playground.as_view(), name='task_playground'), # template = task_playground.html
 
   #

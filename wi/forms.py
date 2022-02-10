@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField
-from .models import task, area
+from .models import domain, area, task
 import datetime
 
 #
@@ -120,8 +120,17 @@ class WorkSheetForm(ModelForm):
        }
 
 class AreaMultiEditForm(ModelForm):
+
+    domain = ModelChoiceField(queryset = area.objects.all())
+
     class Meta:
         model = area
+        fields = ['name', 'domain', 'created', 'updated']
+
+
+class DomainMultiEditForm(ModelForm):
+    class Meta:
+        model = domain
         fields = ['name', 'created', 'updated']
 
 class TaskModelForm(ModelForm):

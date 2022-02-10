@@ -32,7 +32,7 @@
                     <tr>
                         <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.priority is True %} checked {% endif %}> </td>
                         <td><input type="checkbox" name="status" id="id_status" disabled="disabled" {% if task.status is True %} checked {% endif %}> </td>
-                        <td> <a href='{% url "wi:task_areafocus" task.area %}' class="text-reset text-decoration-none"> {{ task.area }} </td>
+                        <td> <a href='{% url "wi:task_areafocus" task.area.id %}' class="text-reset text-decoration-none"> {{ task.area }} </td>
                         <td> <a href='{% url "wi:wi_update" task.id %}' {{ task.id }} class="text-reset text-decoration-none" > {{ task.description }} </a> </td>
                         <td> {{task.created | date:"M j"}} </td>
                     </tr>
