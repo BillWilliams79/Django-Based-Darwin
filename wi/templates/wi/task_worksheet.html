@@ -43,7 +43,7 @@
                                     {{ area_form.management_form }}
                                     <table class='table table-hover table-sm'>
                                         <thead> 
-                                            <tr>
+                                            <tr style="font-size: 12px">
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name != "area" %}
                                                         <th>{{ field.label_tag }} </th>
@@ -53,7 +53,7 @@
                                         </thead>
                                         <tbody>
                                                 {% for form in area_form %}
-                                                <tr>
+                                                <tr style="font-size: 12px">
                                                     {% for field in form.visible_fields %}
                                                         <td>{{ field }} </td>
                                                     {% endfor %}
