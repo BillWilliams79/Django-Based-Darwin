@@ -24,7 +24,8 @@
                 {{ domain_name }} Tasks
                 {% if domain_count > 1 %}
                     <button type="submit" name="domain_right" class='btn btn-dark btn-sm'> <i class="fas fa-arrow-right"></i> </button>
-                {% endif %}
+                    {% endif %}
+                    <button type="submit" name="domain_settings" class='btn btn-dark btn-sm' style="float: right">  <i class="fas fa-cog"></i> </button>
             </h3>
             {% csrf_token %}
             {% if area_form_list|length == 0 %}
@@ -41,9 +42,9 @@
                                 <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks</a> </h5>
                                 <p class="card-text">
                                     {{ area_form.management_form }}
-                                    <table class='table table-hover table-sm'>
+                                    <table class='table table-hover table-sm' sytle="font-size: 12px">
                                         <thead> 
-                                            <tr>
+                                            <tr style='font-size: 12px;'>
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name != "area" %}
                                                         <th>{{ field.label_tag }} </th>
@@ -53,7 +54,7 @@
                                         </thead>
                                         <tbody>
                                                 {% for form in area_form %}
-                                                <tr>
+                                                <tr style='font-size: 12px;'>
                                                     {% for field in form.visible_fields %}
                                                         <td>{{ field }} </td>
                                                     {% endfor %}
