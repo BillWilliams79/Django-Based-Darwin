@@ -7,6 +7,9 @@ from django.shortcuts import render, redirect
 from django.forms import modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+#from datetime import datetime, timedelta
+from django.utils import timezone
 
 from django.contrib import messages
 
@@ -301,11 +304,12 @@ def area_multiedit(request):
 def task_worksheet(request):
 
     #
-    # session handling: check and set initial condition, 0th domain and one day session expiry
+    # session handling: check and set initial condition, 0th domain and seven
+    # day session expiry
     #
     if not 'display_domain' in request.session:
         request.session['display_domain'] = 0
-        request.session.set_expiry(24 * 60 * 60)
+        request.session.set_expiry(7 * 24 * 60 * 60)
 
     index = request.session['display_domain']
 
@@ -352,15 +356,12 @@ def task_worksheet(request):
 
     #
     # Create list of area names. The case of user with no areas handled in template
-    # .values_list(): https://docs.djangoproject.com/en/stable/ref/models/querysets/#values-list
     #
     area_list = list(area.objects.filter(created_by=request.user
                                 ).filter(domain=current_domain))
-#                                ).values_list('name', flat=True))
-    success_areas = list()
 
     #
-    # formsetfactory for use throughout
+    # formsetfactory for use throughout this view
     #
     formsetfactory = inlineformset_factory(
                                     area,
@@ -377,6 +378,8 @@ def task_worksheet(request):
         #
         # iterate through all formset, one for each area
         #
+        success_areas = list()
+
         for area_obj in area_list:
             #
             # create formset for each area. Prefix required when using more than one formset per page.
@@ -403,11 +406,22 @@ def task_worksheet(request):
                     # and so that can be modified.
                     #
                     for form in formset:
+                        # TODO: this works but should provably be checked for haschanged/valid and retested
                         if not form.instance.created_by:
                             form.instance.created_by = request.user
 
+                        #
+                        # set/clear completed date for changed fields
+                        #
+                        if form.has_changed() and form.is_valid():
+                            if 'status' in form.changed_data:
+                                if form.cleaned_data['status']:
+                                    form.instance.completed = timezone.now()
+                                else:
+                                    form.instance.completed = None
+
                     formset.save()
-                    # potentially processing multiple formset so flash message handling is aggregated
+                    # processing multiple formset so flash message handling is aggregated
                     success_areas.append(area_obj.name)
 
                 else:
@@ -436,8 +450,11 @@ def task_worksheet(request):
                             ).filter(domain=render_domain))
 
     form_list = list()
+    retention_date = timezone.now() - timezone.timedelta(days = render_domain.retain_completed_tasks)
+
     for area_obj in area_list:
-        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user),
+        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user
+                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)),
                                         prefix = area_obj.name,
                                         instance=area.objects.get(pk=area_obj.id)))
     #
@@ -484,7 +501,17 @@ def area_focus(request, pk):
             for form in formset:
                 if not form.instance.created_by:
                     form.instance.created_by = request.user
-            
+
+                #
+                # set/clear completed date for changed fields
+                #
+                if form.has_changed() and form.is_valid():
+                    if 'status' in form.changed_data:
+                        if form.cleaned_data['status']:
+                            form.instance.completed = timezone.now()
+                        else:
+                            form.instance.completed = None
+
             formset.save()
             messages.add_message(request, messages.SUCCESS, f'{area_obj.name} tasks updated successfully')
             return redirect(reverse_lazy('wi:task_areafocus', args=(pk,)))
@@ -498,7 +525,9 @@ def area_focus(request, pk):
         #
         # Create formset using specified object
         #
-        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user).filter(area=area_obj.id))
+        retention_date = timezone.now() - timezone.timedelta(days = area_obj.domain.retain_completed_tasks)
+        print(f'area_focus retention date = {retention_date}')
+        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user).filter(area=area_obj.id).filter(Q(completed__gt = retention_date) | Q(completed = None)))
 
     return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
                                                     'formset': formset } )

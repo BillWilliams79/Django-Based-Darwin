@@ -10,6 +10,11 @@ class domain(models.Model):
                 blank = False,
     )
 
+    retain_completed_tasks = models.PositiveIntegerField(
+                'Show done task (days)',
+                default = 1
+    )
+
     created_by = models.ForeignKey(
                 settings.AUTH_USER_MODEL,
                 on_delete=models.SET_NULL,
@@ -43,9 +48,6 @@ class domain(models.Model):
         return super(domain, self).save(*args, **kwargs)
 
     def __str__(self):
-        #
-        # description is always the best for task's smallest representation
-        #
         return(f"{self.name}")
 
 
@@ -143,7 +145,12 @@ class task(models.Model):
                 null = True,
                 blank = True,
     )
- 
+
+    completed = models.DateTimeField(
+                null = True,
+                blank = True,
+    )
+
     def save(self, *args, **kwargs):
         #
         # intercept all saves and process time updates.
