@@ -65,6 +65,12 @@ class area(models.Model):
                 null = True,
     )
 
+    hide = models.BooleanField(
+                default = False, 
+                null = False,
+                blank = False,
+    )
+    
     created_by = models.ForeignKey(
                 settings.AUTH_USER_MODEL,
                 on_delete=models.SET_NULL,

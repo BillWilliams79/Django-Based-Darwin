@@ -358,7 +358,8 @@ def task_worksheet(request):
     # Create list of area names. The case of user with no areas handled in template
     #
     area_list = list(area.objects.filter(created_by=request.user
-                                ).filter(domain=current_domain))
+                                ).filter(domain=current_domain
+                                ).exclude(hide=True))
 
     #
     # formsetfactory for use throughout this view
@@ -447,7 +448,8 @@ def task_worksheet(request):
     # iterate over all areas creating list of forms to use in the template
     #
     area_list = list(area.objects.filter(created_by=request.user
-                            ).filter(domain=render_domain))
+                            ).filter(domain=render_domain
+                            ).exclude(hide=True))
 
     form_list = list()
     retention_date = timezone.now() - timezone.timedelta(days = render_domain.retain_completed_tasks)
