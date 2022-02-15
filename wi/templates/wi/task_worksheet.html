@@ -39,7 +39,7 @@
                     {% for area_obj, area_form in area_form_list %}
                         <div class="col card">
                             <div class="card-body">
-                                <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks</a> </h5>
+                                <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks  <i class="fas fa-edit fa-xs"></i></a> </h5>
                                 <p class="card-text">
                                     {{ area_form.management_form }}
                                     <table class='table table-hover table-sm' sytle="font-size: 12px">
