@@ -79,7 +79,7 @@ class AreaFocusForm(ModelForm):
     
     class Meta:
         model = task
-        fields = ['priority', 'status', 'area', 'description', ]
+        fields = ['priority', 'status', 'description', 'area', ]
         widgets = {
             'priority' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
