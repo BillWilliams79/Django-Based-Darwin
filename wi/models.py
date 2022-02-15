@@ -11,7 +11,7 @@ class domain(models.Model):
     )
 
     retain_completed_tasks = models.PositiveIntegerField(
-                'Show done task (days)',
+                'Show done tasks (days)',
                 default = 1
     )
 
