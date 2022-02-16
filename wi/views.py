@@ -459,7 +459,7 @@ def task_worksheet(request):
     for area_obj in area_list:
         form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user
                                                             ).filter(Q(completed__gt = retention_date) | Q(completed = None)
-                                                            ).order_by('status'),
+                                                            ).order_by('status', '-priority'),
                                         prefix = area_obj.name,
                                         instance=area.objects.get(pk=area_obj.id)))
     #
@@ -536,7 +536,7 @@ def area_focus(request, pk):
         formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
                                                             ).filter(area=area_obj.id
                                                             ).filter(Q(completed__gt = retention_date) | Q(completed = None)
-                                                            ).order_by('status'))
+                                                            ).order_by('status', '-priority'))
 
     return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
                                                     'formset': formset } )
