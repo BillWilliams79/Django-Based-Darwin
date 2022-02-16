@@ -17,7 +17,7 @@ class domain(models.Model):
 
     created_by = models.ForeignKey(
                 settings.AUTH_USER_MODEL,
-                on_delete=models.SET_NULL,
+                on_delete=models.CASCADE,
                 null = True,
     )
 
@@ -61,7 +61,7 @@ class area(models.Model):
 
     domain = models.ForeignKey(
                 'domain',
-                on_delete=models.SET_NULL,
+                on_delete=models.CASCADE,
                 null = True,
     )
 
@@ -73,7 +73,7 @@ class area(models.Model):
     
     created_by = models.ForeignKey(
                 settings.AUTH_USER_MODEL,
-                on_delete=models.SET_NULL,
+                on_delete=models.CASCADE,
                 null = True,
     )
     
@@ -131,13 +131,13 @@ class task(models.Model):
 
     area = models.ForeignKey(
                 'area',
-                on_delete=models.SET_NULL,
+                on_delete=models.CASCADE,
                 null = True,
     )
 
     created_by = models.ForeignKey(
                 settings.AUTH_USER_MODEL,
-                on_delete=models.SET_NULL,
+                on_delete=models.CASCADE,
                 null = True,
     )
 
