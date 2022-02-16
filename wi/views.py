@@ -244,7 +244,8 @@ def domain_multiedit(request):
         # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
         # pass to template for render
         #
-        formset = domain_factory(queryset=domain.objects.filter(created_by=request.user))
+        formset = domain_factory(queryset=domain.objects.filter(created_by=request.user
+                                                        ).order_by('name'))
 
     return render(request, 'wi/domain_multiedit.html', {'formset': formset})
 #
@@ -293,7 +294,8 @@ def area_multiedit(request):
         # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
         # pass to template for render
         #
-        formset = area_factory(queryset=area.objects.filter(created_by=request.user))
+        formset = area_factory(queryset=area.objects.filter(created_by=request.user
+                                                    ).order_by('domain__name', 'hide', 'name'))
 
 
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
@@ -456,7 +458,8 @@ def task_worksheet(request):
 
     for area_obj in area_list:
         form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user
-                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)),
+                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)
+                                                            ).order_by('status'),
                                         prefix = area_obj.name,
                                         instance=area.objects.get(pk=area_obj.id)))
     #
@@ -530,7 +533,10 @@ def area_focus(request, pk):
         #
         retention_date = timezone.now() - timezone.timedelta(days = area_obj.domain.retain_completed_tasks)
         print(f'area_focus retention date = {retention_date}')
-        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user).filter(area=area_obj.id).filter(Q(completed__gt = retention_date) | Q(completed = None)))
+        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
+                                                            ).filter(area=area_obj.id
+                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)
+                                                            ).order_by('status'))
 
     return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
                                                     'formset': formset } )
