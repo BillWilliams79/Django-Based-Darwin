@@ -27,9 +27,9 @@
                 {% endif %}
                 {% if area_form_list|length > 0 %}
                     {% if show_done %}
-                        <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> Hide Done Tasks </i> </button>
+                        <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> Hide Done </button>
                     {% else %}
-                        <button type="submit" name="show_done" class='btn btn-dark btn-sm' style="float: right"> Show Done Tasks </i> </button>
+                        <button type="submit" name="show_done" class='btn btn-dark btn-sm' style="float: right"> Show Done </button>
                     {% endif %}
                 {% endif %}
 
@@ -48,8 +48,8 @@
                             <div class="card-body">
                                 <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks  <i class="fas fa-edit fa-xs"></i></a> 
                                     {% if area_form_list|length > 1 %}
-                                        <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-down"></i> </button>
-                                        <button type="submit" name="navigate_up" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-up"></i> </button>
+                                        <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-down fa-lg"></i> </button>
+                                        <button type="submit" name="navigate_up" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-up fa-lg"></i> </button>
                                     {% endif %}
                                 </h5>
                                 <p class="card-text">
@@ -75,7 +75,7 @@
                                         </tbody>
                                     </table>
                                     <br>
-                                    <input type="submit" name="{{area_obj.name | lower}}" class='btn btn-dark btn' value="Update All">
+                                    <input type="submit" name="{{area_obj.name | lower}}" class='btn btn-dark btn' value="Update">
                                     <p>
                                     {% for form in area_form %}
                                         {% for hidden in form.hidden_fields %}
