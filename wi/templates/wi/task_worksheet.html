@@ -24,13 +24,20 @@
                 {{ domain_name }} Tasks
                 {% if domain_count > 1 %}
                     <button type="submit" name="domain_right" class='btn btn-dark btn-sm'> <i class="fas fa-arrow-right"></i> </button>
+                {% endif %}
+                {% if area_form_list|length > 0 %}
+                    {% if show_done %}
+                        <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> Hide Done Tasks </i> </button>
+                    {% else %}
+                        <button type="submit" name="show_done" class='btn btn-dark btn-sm' style="float: right"> Show Done Tasks </i> </button>
                     {% endif %}
-{% comment %}                     <button type="submit" name="domain_settings" class='btn btn-dark btn-sm' style="float: right">  <i class="fas fa-cog"></i> </button>
- {% endcomment %}            </h3>
+                {% endif %}
+
+                </h3>
             {% csrf_token %}
             {% if area_form_list|length == 0 %}
                 <br>
-                <p> No task areas defined for this domain. Areas are required to track and manage tasks. Please add Areas to continue. </p>
+                <p> No areas defined for this domain. Areas are required to track and manage tasks. Please add areas to continue. </p>
                 <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:area_multiedit' %}'; return false;" value="Edit Areas">
                 <br>
                 <br>

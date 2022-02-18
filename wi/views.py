@@ -8,123 +8,27 @@ from .models import domain, area, task
 
 from django.contrib import messages
 
-#from .forms import TaskCreateModelForm, TaskUpdateModelForm, TaskModelFormsetFactoryModelForm, TaskInlineFormsetFactoryModelForm, GardenTaskInlineFormsetFactoryModelForm
 from .forms import DomainMultiEditForm, AreaMultiEditForm, WorkSheetForm, AreaFocusForm
 
+
 #
-# MULTI-EDIT for Domain
-#
-@login_required 
-def domain_multiedit(request):
-    #
-    # function based implementation of modelformsetfactory
-    #
-    domain_factory = modelformset_factory(
-                                domain,
-                                form=DomainMultiEditForm, 
-                                extra=4,
-                                can_delete = True,
-                            )
-
-    if request.method == 'POST':
-        formset = domain_factory(request.POST, request.FILES)
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            # but first scan the formsets and instatiate the user that created the task
-            # originally tried to used the form or the cleaned data, and of course the
-            # model doesn't incldue createdby. however the form does refer to the instance
-            # and so that can be modified.
-            #
-            for form in formset:
-                if not form.instance.created_by:
-                    form.instance.created_by = request.user
-
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'Domains updated successfully')
-            return redirect(reverse('wi:domain_multiedit'), {'formset': formset})
-        else:
-            #
-            # TODO POST ERROR MESSAGE or just send back the data via post..?
-            #
-            messages.add_message(request, messages.INFO, f'Domain formset not valid')
-            return redirect(reverse('wi:area_multiedit'))
-    else:
-        #
-        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
-        # pass to template for render
-        #
-        formset = domain_factory(queryset=domain.objects.filter(created_by=request.user
-                                                        ).order_by('name'))
-
-    return render(request, 'wi/domain_multiedit.html', {'formset': formset})
-#
-# MULTI-EDIT for Area
-#
-@login_required 
-def area_multiedit(request):
-    #
-    # function based implementation of modelformsetfactory
-    #
-    AreaMultiEditForm.base_fields['domain'].queryset = domain.objects.filter(created_by = request.user)
-
-    area_factory = modelformset_factory(
-                                area,
-                                form=AreaMultiEditForm, 
-                                extra=4,
-                                can_delete = True,
-                            )
-
-    if request.method == 'POST':
-        formset = area_factory(request.POST, request.FILES)
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            # but first scan the formsets and instatiate the user that created the task
-            # originally tried to used the form or the cleaned data, and of course the
-            # model doesn't incldue createdby. however the form does refer to the instance
-            # and so that can be modified.
-            #
-            for form in formset:
-                if not form.instance.created_by:
-                    form.instance.created_by = request.user
-
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'Areas updated successfully')
-            return redirect(reverse('wi:area_multiedit'), {'formset': formset})
-        else:
-            #
-            # TODO POST ERROR MESSAGE or just send back the data via post..?
-            #
-            messages.add_message(request, messages.INFO, f'formset not valid: {formset.errors}')
-            return redirect(reverse('wi:area_multiedit'))
-    else:
-        #
-        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
-        # pass to template for render
-        #
-        formset = area_factory(queryset=area.objects.filter(created_by=request.user
-                                                    ).order_by('domain__name', 'hide', 'name'))
-
-
-    return render(request, 'wi/area_multiedit.html', {'formset': formset})
-#
-# WORKSHEET for Task
+# Tasks Display
 #
 @login_required
 def task_worksheet(request):
 
     #
-    # session handling: check and set initial condition, 0th domain and seven
-    # day session expiry
+    # session handling: check and set initial conditions: 0th domain displayed,
+    # do not show_done and seven day session expiry
     #
     if not 'display_domain' in request.session:
         request.session['display_domain'] = 0
         request.session.set_expiry(7 * 24 * 60 * 60)
 
-    index = request.session['display_domain']
+    if not 'show_done' in request.session:
+        request.session['show_done'] = False
+
+
 
     #
     # process domain navigation buttons.
@@ -139,8 +43,8 @@ def task_worksheet(request):
     if not domains:
         return render(request, 'wi/task_worksheet.html', {'domain_count' : 0, })
 
+    index = request.session['display_domain']
     current_domain = domains[index]
-
     domains_length = len(domains)
 
     if domains_length > 1:
@@ -157,15 +61,17 @@ def task_worksheet(request):
             else:
                 index = index - 1
             request.session['display_domain'] = index
-
-    else:
-        #
-        # if there is only one domain, there is no possible work to be done.
-        #
-        pass
     
     # set render domain after processing domain navigation buttons
     render_domain = domains[index]
+
+    #
+    # process hide/show button
+    #
+    if 'show_done' in request.POST:
+        request.session['show_done'] = True
+    elif 'hide_done' in request.POST:
+        request.session['show_done'] = False
 
     #
     # Create list of area names. The case of user with no areas handled in template
@@ -267,10 +173,18 @@ def task_worksheet(request):
     form_list = list()
     retention_date = timezone.now() - timezone.timedelta(days = render_domain.retain_completed_tasks)
 
+    #
+    # prep queryset for use in factory honoring the hide/show done settings
+    #
+    qs = task.objects.filter(created_by = request.user)
+
+    if not request.session['show_done']:
+        qs = qs.filter(Q(completed__gt = retention_date) | Q(completed = None))
+
+    qs = qs.order_by('status', '-priority')
+
     for area_obj in area_list:
-        form_list.append(formsetfactory(queryset=task.objects.filter(created_by=request.user
-                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)
-                                                            ).order_by('status', '-priority'),
+        form_list.append(formsetfactory(queryset=qs,
                                         prefix = area_obj.name,
                                         instance=area.objects.get(pk=area_obj.id)))
     #
@@ -282,7 +196,8 @@ def task_worksheet(request):
 
     return render(request, 'wi/task_worksheet.html', { 'area_form_list' : afl,
                                                         'domain_name' : render_domain.name,
-                                                        'domain_count' : domains_length, })
+                                                        'domain_count' : domains_length,
+                                                        'show_done' : request.session['show_done'], })
 
 #
 # FOCUS VIEW for Tasks from a single Area
@@ -338,16 +253,119 @@ def area_focus(request, pk):
             #
             messages.add_message(request, messages.ERROR, f'Changes not saved: data entry invalid {formset.errors}')
             return redirect(reverse_lazy('wi:task_areafocus', args=(pk,)))
+
     else: # GET processing
         #
         # Create formset using specified object
         #
         retention_date = timezone.now() - timezone.timedelta(days = area_obj.domain.retain_completed_tasks)
         print(f'area_focus retention date = {retention_date}')
+
         formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
                                                             ).filter(area=area_obj.id
                                                             ).filter(Q(completed__gt = retention_date) | Q(completed = None)
                                                             ).order_by('status', '-priority'))
 
-    return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
-                                                    'formset': formset } )
+
+        return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
+                                                        'formset': formset } )
+
+#
+# MULTI-EDIT for Domain
+#
+@login_required 
+def domain_multiedit(request):
+    #
+    # function based implementation of modelformsetfactory
+    #
+    domain_factory = modelformset_factory(
+                                domain,
+                                form=DomainMultiEditForm, 
+                                extra=4,
+                                can_delete = True,
+                            )
+
+    if request.method == 'POST':
+        formset = domain_factory(request.POST, request.FILES)
+        if formset.is_valid():
+            #
+            # We have good data, save and return to listview
+            #
+            # but first scan the formsets and instatiate the user that created the task
+            # originally tried to used the form or the cleaned data, and of course the
+            # model doesn't incldue createdby. however the form does refer to the instance
+            # and so that can be modified.
+            #
+            for form in formset:
+                if not form.instance.created_by:
+                    form.instance.created_by = request.user
+
+            formset.save()
+            messages.add_message(request, messages.SUCCESS, f'Domains updated successfully')
+            return redirect(reverse('wi:domain_multiedit'), {'formset': formset})
+        else:
+            #
+            # TODO POST ERROR MESSAGE or just send back the data via post..?
+            #
+            messages.add_message(request, messages.INFO, f'Domain formset not valid')
+            return redirect(reverse('wi:area_multiedit'))
+    else:
+        #
+        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
+        # pass to template for render
+        #
+        formset = domain_factory(queryset=domain.objects.filter(created_by=request.user
+                                                        ).order_by('name'))
+
+    return render(request, 'wi/domain_multiedit.html', {'formset': formset})
+#
+# MULTI-EDIT for Area
+#
+@login_required 
+def area_multiedit(request):
+    #
+    # function based implementation of modelformsetfactory
+    #
+    AreaMultiEditForm.base_fields['domain'].queryset = domain.objects.filter(created_by = request.user)
+
+    area_factory = modelformset_factory(
+                                area,
+                                form=AreaMultiEditForm, 
+                                extra=4,
+                                can_delete = True,
+                            )
+
+    if request.method == 'POST':
+        formset = area_factory(request.POST, request.FILES)
+        if formset.is_valid():
+            #
+            # We have good data, save and return to listview
+            #
+            # but first scan the formsets and instatiate the user that created the task
+            # originally tried to used the form or the cleaned data, and of course the
+            # model doesn't incldue createdby. however the form does refer to the instance
+            # and so that can be modified.
+            #
+            for form in formset:
+                if not form.instance.created_by:
+                    form.instance.created_by = request.user
+
+            formset.save()
+            messages.add_message(request, messages.SUCCESS, f'Areas updated successfully')
+            return redirect(reverse('wi:area_multiedit'), {'formset': formset})
+        else:
+            #
+            # TODO POST ERROR MESSAGE or just send back the data via post..?
+            #
+            messages.add_message(request, messages.INFO, f'formset not valid: {formset.errors}')
+            return redirect(reverse('wi:area_multiedit'))
+    else:
+        #
+        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
+        # pass to template for render
+        #
+        formset = area_factory(queryset=area.objects.filter(created_by=request.user
+                                                    ).order_by('domain__name', 'hide', 'name'))
+
+
+    return render(request, 'wi/area_multiedit.html', {'formset': formset})
