@@ -95,7 +95,7 @@ class area(OrderedModel):
     def save(self, *args, **kwargs):
         #
         # intercept all saves and process time updates.
-        #   -> used to be done with auto_now and auto_now_add. but these forced editable to be fals
+        #   -> used to be done with auto_now and auto_now_add. but these forced editable to be false
         #   -> so items were not displayed in factories and the admin
         # Case1 - newly created items won't have an id to save. updated created
         # Case2 - always set updated to current time

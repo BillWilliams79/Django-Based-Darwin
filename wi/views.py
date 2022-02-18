@@ -29,12 +29,8 @@ def task_worksheet(request):
     if not 'show_done' in request.session:
         request.session['show_done'] = False
 
-
-
     #
     # process domain navigation buttons.
-    # todo: couldn't determine a more pythonic means to iterate forward/backward
-    #       across the domains, hence implementation is C-like.
     #
     domains = domain.objects.filter(created_by=request.user)
     #
@@ -127,7 +123,7 @@ def task_worksheet(request):
                                 )
 
     #
-    # First handle post case (where one of the forms requires updating)
+    # POST processing
     #
     if request.method == 'POST':
         #
@@ -145,7 +141,7 @@ def task_worksheet(request):
                                     instance=area.objects.get(pk=area_obj.id),
                                     )
             #
-            # parse/handle only those formset that changed
+            # process only formsets that changed
             #
             if formset.has_changed(): 
                 #
@@ -187,13 +183,18 @@ def task_worksheet(request):
 
             else:
                 #
-                # else pass for formset where data didn't change, can delete this later
+                # formset didn't change, pass
                 #
                 pass
 
         if success_areas:
             areas_string = ', '.join(str(a) for a in success_areas)
             messages.add_message(request, messages.SUCCESS, f'{areas_string} tasks updated successfully')
+
+        #
+        # redirect/GET back to worksheet
+        #
+        return redirect(reverse_lazy('wi:task_worksheet'))
 
     #
     # Otherwise, its a GET method call, create the TaskFormset and 
@@ -226,7 +227,7 @@ def task_worksheet(request):
     # zip lists together so then can be mutually iterated in the template
     #
     area_form_list = zip(area_list, form_list)
-    # convert zip object to list so django template can use |length filter (hack)
+    # convert zip object to list so django template can use |length filter
     afl = list(area_form_list)
 
     return render(request, 'wi/task_worksheet.html', { 'area_form_list' : afl,
@@ -254,54 +255,67 @@ def area_focus(request, pk):
                                                 extra=5,
                                                 can_delete=True,
                                             )
+
+    #
+    # POST processing
+    #
     if request.method == 'POST':
+
         formset = area_formset_factory(
-                                        request.POST, 
-                                        request.FILES, 
-                                        queryset=task.objects.filter(created_by=request.user).filter(area=area_obj)
+                                    request.POST, 
+                                    request.FILES, 
+                                    queryset=task.objects.filter(created_by=request.user
+                                                        ).filter(area=area_obj)
                                     )
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            for form in formset:
-                if not form.instance.created_by:
-                    form.instance.created_by = request.user
 
-                if form.has_changed() and form.is_valid():
-                    #
-                    # set/clear completed date for changed fields
-                    #
-                    if 'status' in form.changed_data:
-                        if form.cleaned_data['status']:
-                            form.instance.completed = timezone.now()
-                        else:
-                            form.instance.completed = None
+        if formset.has_changed():
+            if formset.is_valid():
+                #
+                # We have good data, save and return to listview
+                #
 
+                for form in formset:
+                    if not form.instance.created_by:
+                        form.instance.created_by = request.user
 
+                    if form.has_changed() and form.is_valid():
+                        #
+                        # set/clear completed date for changed fields
+                        #
+                        if 'status' in form.changed_data:
+                            if form.cleaned_data['status']:
+                                form.instance.completed = timezone.now()
+                            else:
+                                form.instance.completed = None
 
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'{area_obj.name} tasks updated successfully')
-            return redirect(reverse_lazy('wi:task_areafocus', args=(pk,)))
+                formset.save()
+                messages.add_message(request, messages.SUCCESS, f'{area_obj.name} tasks updated successfully')
+
+            else:
+                #
+                # form is invalid, flash message with formset.errors
+                #
+                messages.add_message(request, messages.ERROR, f'Changes not saved: data entry invalid {formset.errors}')
+
         else:
-            #
-            # form invalid could be many things...
-            #
-            messages.add_message(request, messages.ERROR, f'Changes not saved: data entry invalid {formset.errors}')
-            return redirect(reverse_lazy('wi:task_areafocus', args=(pk,)))
-
-    else: # GET processing
+            # POST called with no changes
+            pass
+        
         #
-        # Create formset using specified object
+        #   redirect/GET after all post processing
+        #
+        return redirect(reverse_lazy('wi:task_areafocus', args=(pk,)))
+
+    else:
+        #
+        # GET processing
         #
         retention_date = timezone.now() - timezone.timedelta(days = area_obj.domain.retain_completed_tasks)
-        print(f'area_focus retention date = {retention_date}')
 
         formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
                                                             ).filter(area=area_obj.id
                                                             ).filter(Q(completed__gt = retention_date) | Q(completed = None)
                                                             ).order_by('status', '-priority'))
-
 
         return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
                                                         'formset': formset } )
@@ -322,33 +336,37 @@ def domain_multiedit(request):
                             )
 
     if request.method == 'POST':
-        formset = domain_factory(request.POST, request.FILES)
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            # but first scan the formsets and instatiate the user that created the task
-            # originally tried to used the form or the cleaned data, and of course the
-            # model doesn't incldue createdby. however the form does refer to the instance
-            # and so that can be modified.
-            #
-            for form in formset:
-                if not form.instance.created_by:
-                    form.instance.created_by = request.user
 
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'Domains updated successfully')
-            return redirect(reverse('wi:domain_multiedit'), {'formset': formset})
+        formset = domain_factory(request.POST, 
+                                request.FILES)
+
+        if formset.has_changed():
+            if formset.is_valid():
+                #
+                # We have good data, process created_by and save.
+                #
+                for form in formset:
+                    if not form.instance.created_by:
+                        form.instance.created_by = request.user
+
+                formset.save()
+                messages.add_message(request, messages.SUCCESS, f'Domains updated successfully')
+            else:
+                #
+                # form is invalid, flash message with formset.errors
+                #
+                messages.add_message(request, messages.ERROR, f'Changes not saved: data entry invalid {formset.errors}')
         else:
-            #
-            # TODO POST ERROR MESSAGE or just send back the data via post..?
-            #
-            messages.add_message(request, messages.INFO, f'Domain formset not valid')
-            return redirect(reverse('wi:area_multiedit'))
+            # no changes to formset
+            pass
+        
+        #
+        # redirect/GET back to area multi-edit
+        #
+        return redirect(reverse('wi:domain_multiedit'))
     else:
         #
-        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
-        # pass to template for render
+        # GET processing, re-render page
         #
         formset = domain_factory(queryset=domain.objects.filter(created_by=request.user
                                                         ).order_by('name'))
@@ -372,56 +390,60 @@ def area_multiedit(request):
                             )
 
     if request.method == 'POST':
-        formset = area_factory(request.POST, request.FILES)
-        if formset.is_valid():
-            #
-            # We have good data, save and return to listview
-            #
-            # but first scan the formsets and instatiate the user that created the task
-            # originally tried to used the form or the cleaned data, and of course the
-            # model doesn't incldue createdby. however the form does refer to the instance
-            # and so that can be modified.
-            #
-            for form in formset:
-                if not form.instance.created_by:
-                    form.instance.created_by = request.user
 
-                #
-                # the django-ordered-model library fails to handle case when domain changes. They
-                # actually have a bug open for it, not fixed. So the hack is to find the max
-                # order value in the new domain and change the order value on the area to max + 1
-                # which sets an area added to a new domain at bottom of the list.
-                #
-                if 'domain' in form.changed_data:
-                    new_domain = form.cleaned_data['domain']
-                    new_max = area.objects.filter(created_by = request.user
-                                        ).filter(domain__name = new_domain
-                                        ).aggregate(Max('order'))
-                    # max returns None if there are no areas in the new domain
-                    if new_max['order__max'] == None:
-                        form.instance.order = 0
-                    else:
-                        form.instance.order = new_max['order__max'] + 1
-                    # in case more than one area moved to a new domain, save this form now
-                    form.save()
-                    print(f'{new_domain} {new_max["order__max"]} {form.instance.order}')
+        formset = area_factory(request.POST, 
+                            request.FILES)
+        if formset.has_changed():
 
-            formset.save()
-            messages.add_message(request, messages.SUCCESS, f'Areas updated successfully')
-            return redirect(reverse('wi:area_multiedit'), {'formset': formset})
+            if formset.is_valid():
+                #
+                # formset changed and is valid, process created_by, order data
+                #
+                for form in formset:
+                    if not form.instance.created_by:
+                        form.instance.created_by = request.user
+
+                    #
+                    # the django-ordered-model library fails to handle case when domain changes. They
+                    # actually have a bug open for it, not fixed. So the hack is to find the max
+                    # order value in the new domain and change the order value on the area to max + 1
+                    # which sets an area added to a new domain at bottom of the list.
+                    #
+                    if 'domain' in form.changed_data:
+                        new_domain = form.cleaned_data['domain']
+                        new_max = area.objects.filter(created_by = request.user
+                                            ).filter(domain__name = new_domain
+                                            ).aggregate(Max('order'))
+                        # max returns None if there are no areas in the new domain
+                        if new_max['order__max'] == None:
+                            form.instance.order = 0
+                        else:
+                            form.instance.order = new_max['order__max'] + 1
+                        # in case more than one area moved to a new domain, save this form now
+                        form.save()
+                        print(f'{new_domain} {new_max["order__max"]} {form.instance.order}')
+
+                formset.save()
+                messages.add_message(request, messages.SUCCESS, f'Areas updated successfully')
+            else:
+                #
+                # form is invalid, flash message with formset.errors
+                #
+                messages.add_message(request, messages.ERROR, f'Changes not saved: data entry invalid {formset.errors}')
         else:
-            #
-            # TODO POST ERROR MESSAGE or just send back the data via post..?
-            #
-            messages.add_message(request, messages.INFO, f'formset not valid: {formset.errors}')
-            return redirect(reverse('wi:area_multiedit'))
+            # formset didn't change
+            pass
+        #
+        # redirect/GET back to same page
+        #
+        return redirect(reverse('wi:area_multiedit'))
+
     else:
         #
-        # Otherwise, its a GET method call, instantiate TaskFormset (from database) and 
-        # pass to template for render
+        # GET processing, re-render page
         #
         formset = area_factory(queryset=area.objects.filter(created_by=request.user
                                                     ).order_by('domain__name', 'hide', 'name'))
 
-
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
+    
