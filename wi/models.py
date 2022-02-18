@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 
+from ordered_model.models import OrderedModel
+
 class domain(models.Model):
 
     name = models.CharField(
@@ -51,7 +53,7 @@ class domain(models.Model):
         return(f"{self.name}")
 
 
-class area(models.Model):
+class area(OrderedModel):
 
     name = models.CharField(
                 max_length=25,
@@ -87,6 +89,8 @@ class area(models.Model):
                 null = True,
                 blank = True,
     )
+
+    order_with_respect_to = 'domain'
 
     def save(self, *args, **kwargs):
         #

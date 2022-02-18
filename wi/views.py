@@ -7,6 +7,7 @@ from django.utils import timezone
 from .models import domain, area, task
 
 from django.contrib import messages
+from django.db.models import Max
 
 from .forms import DomainMultiEditForm, AreaMultiEditForm, WorkSheetForm, AreaFocusForm
 
@@ -72,6 +73,40 @@ def task_worksheet(request):
         request.session['show_done'] = True
     elif 'hide_done' in request.POST:
         request.session['show_done'] = False
+
+    #
+    # process user order buttons (django-order-model library)
+    # N.B. library is 'area.hide' unaware, so had to add code to skip hidden areas
+    #
+    if 'navigate_up' in request.POST:
+        a = area.objects.get(name=request.POST['navigate_up'])
+
+        # up button = .previous()
+        # if a.previous = None, exit
+        # if a.previous.hide = False, a.up and exit
+        # if a.previous.hide = True, a.up and continue
+        while a.previous() != None:
+            if a.previous().hide == True:
+                a.up()
+            else:
+                a.up()
+                break
+
+    elif 'navigate_down' in request.POST:
+        a = area.objects.get(name=request.POST['navigate_down'])
+        # 
+        # down button = .next()
+        # if a.next = None, exit
+        # if a.next.hide = False, a.down and exit
+        # if a next.hide = True, a.down and contine
+        while a.next() != None:
+            if a.next().hide == True:
+                a.down()
+                print('down and skipping hidden')
+            else:
+                a.down()
+                print('down, done due to not hidden')
+                break
 
     #
     # Create list of area names. The case of user with no areas handled in template
@@ -212,7 +247,6 @@ def area_focus(request, pk):
     # us to override the queryset selecting the values to be displayed.
     #
     AreaFocusForm.base_fields['area'].queryset = area.objects.filter(created_by = request.user
-                                                                ).filter(domain=area_obj.domain
                                                                 ).exclude(hide=True)
 
     area_formset_factory = modelformset_factory(task,
@@ -234,15 +268,17 @@ def area_focus(request, pk):
                 if not form.instance.created_by:
                     form.instance.created_by = request.user
 
-                #
-                # set/clear completed date for changed fields
-                #
                 if form.has_changed() and form.is_valid():
+                    #
+                    # set/clear completed date for changed fields
+                    #
                     if 'status' in form.changed_data:
                         if form.cleaned_data['status']:
                             form.instance.completed = timezone.now()
                         else:
                             form.instance.completed = None
+
+
 
             formset.save()
             messages.add_message(request, messages.SUCCESS, f'{area_obj.name} tasks updated successfully')
@@ -349,6 +385,26 @@ def area_multiedit(request):
             for form in formset:
                 if not form.instance.created_by:
                     form.instance.created_by = request.user
+
+                #
+                # the django-ordered-model library fails to handle case when domain changes. They
+                # actually have a bug open for it, not fixed. So the hack is to find the max
+                # order value in the new domain and change the order value on the area to max + 1
+                # which sets an area added to a new domain at bottom of the list.
+                #
+                if 'domain' in form.changed_data:
+                    new_domain = form.cleaned_data['domain']
+                    new_max = area.objects.filter(created_by = request.user
+                                        ).filter(domain__name = new_domain
+                                        ).aggregate(Max('order'))
+                    # max returns None if there are no areas in the new domain
+                    if new_max['order__max'] == None:
+                        form.instance.order = 0
+                    else:
+                        form.instance.order = new_max['order__max'] + 1
+                    # in case more than one area moved to a new domain, save this form now
+                    form.save()
+                    print(f'{new_domain} {new_max["order__max"]} {form.instance.order}')
 
             formset.save()
             messages.add_message(request, messages.SUCCESS, f'Areas updated successfully')

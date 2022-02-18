@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'wi.apps.WiConfig',
     'users.apps.UsersConfig',
+    'ordered_model',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
