@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField
+from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField, Textarea
 from .models import domain, area, task
 
 
@@ -35,6 +35,7 @@ class AreaFocusForm(ModelForm):
             'status' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
             'description' : TextInput(attrs={'class' : 'w-100 darwin_text',}),
+ #           'description' : Textarea(attrs={'class' : 'w-100 darwin_text',}),
 
         }
 
@@ -58,4 +59,16 @@ class DomainMultiEditForm(ModelForm):
         fields = ['name', 'retain_completed_tasks', 'created', 'updated']
 
 
-
+#
+# Tasks Calendar Dispaly Form
+#
+class TaskCalendarForm(ModelForm):
+    class Meta:
+        model = task
+        fields = ['description',]
+        widgets = {
+            'description' : TextInput(attrs={
+                                            'class' : 'w-100 darwin_calendar_text',
+                                            }
+                                    ),
+       }

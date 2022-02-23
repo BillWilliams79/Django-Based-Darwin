@@ -5,11 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
 from .models import domain, area, task
+import datetime as dt
 
 from django.contrib import messages
 from django.db.models import Max
 
-from .forms import DomainMultiEditForm, AreaMultiEditForm, WorkSheetForm, AreaFocusForm
+from .forms import DomainMultiEditForm, AreaMultiEditForm, WorkSheetForm, AreaFocusForm, TaskCalendarForm
 
 
 #
@@ -44,6 +45,9 @@ def task_worksheet(request):
     current_domain = domains[index]
     domains_length = len(domains)
 
+    #
+    # process domain naviagation buttons
+    #
     if domains_length > 1:
 
         if 'domain_right' in request.POST:
@@ -447,3 +451,196 @@ def area_multiedit(request):
 
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
     
+@login_required
+def task_calendarview(request):
+
+    #
+    # session handling: check and set initial conditions: 0th domain displayed,
+    # do not show_done and seven day session expiry
+    #
+    if not 'display_domain' in request.session:
+        request.session['display_domain'] = 0
+        request.session.set_expiry(7 * 24 * 60 * 60)
+
+    if not 'show_done' in request.session:
+        request.session['show_done'] = False
+
+    #
+    # process domain navigation buttons.
+    #
+    domains = domain.objects.filter(created_by=request.user)
+    #
+    # if the user somehow has no domains, render template setting domain_count to zero
+    # and the template will handle.
+    #
+    if not domains:
+        return render(request, 'wi/task_worksheet.html', {'domain_count' : 0, })
+
+    index = request.session['display_domain']
+    current_domain = domains[index]
+    domains_length = len(domains)
+
+    #
+    # process domain naviagation buttons
+    #
+    if domains_length > 1:
+
+        if 'domain_right' in request.POST:
+            index = index + 1
+            if index == domains_length:
+                index = 0
+            request.session['display_domain'] = index
+
+        elif 'domain_left' in request.POST:
+            if index == 0:
+                index = domains_length - 1
+            else:
+                index = index - 1
+            request.session['display_domain'] = index
+    
+    # set render domain after processing domain navigation buttons
+    render_domain = domains[index]
+
+    #
+    # process hide/show button
+    #
+    if 'show_done' in request.POST:
+        request.session['show_done'] = True
+    elif 'hide_done' in request.POST:
+        request.session['show_done'] = False
+
+
+
+    # formsetfactory for use throughout this view
+    #
+    # 
+    formsetfactory = modelformset_factory(
+                                task,
+                                form=TaskCalendarForm, 
+                                extra=0,
+                                can_delete = False,
+                            )
+    #
+    # calculate the days and start day for the calendar render
+    #
+    
+    display_weeks = 2
+    #
+    #   given the display weeks, calculate a sunday for a number of weeks ago.
+    #   input is number of weeks you want displayed.
+    #
+    today = timezone.now()
+
+    adjusted_display_weeks = 0 if display_weeks == 0 else display_weeks - 1
+    daysthisweektoSunday = 0 if dt.datetime.isoweekday(today) == 7 else dt.datetime.isoweekday(today)
+    start_sunday_offset = adjusted_display_weeks * 7 + daysthisweektoSunday
+    start_day = today - timezone.timedelta(days = start_sunday_offset)
+
+    display_days = display_weeks * 7
+
+    form_list = list()
+    days_list = list()
+
+    #
+    # POST processing
+    #
+    if request.method == 'POST':
+        #
+        # iterate through all formset, one for each area
+        #
+        success_areas = list()
+    
+        for loop_day in range(display_days):
+            current_day = start_day + timezone.timedelta(loop_day)
+            #
+            # create formset for each area. Prefix required when using more than one formset per page.
+            #
+            formset = formsetfactory(request.POST,
+                                    request.FILES,
+                                    prefix = current_day.strftime("%Y-%m-%d")
+                                    )
+            #
+            # process only formsets that changed
+            #
+            if formset.has_changed(): 
+                #
+                # handle data valid vs invalid
+                #
+                if formset.is_valid():
+                    #
+                    # We have good data, save and return to listview
+                    #
+                    # but first scan the formsets and instatiate the user that created the task
+                    # originally tried to used the form or the cleaned data, and of course the
+                    # model doesn't incldue createdby. however the form does refer to the instance
+                    # and so that can be modified.
+                    #
+                    for form in formset:
+                        # TODO: this works but should provably be checked for haschanged/valid and retested
+                        if not form.instance.created_by:
+                            form.instance.created_by = request.user
+
+                        #
+                        # set/clear completed date for changed fields
+                        #
+                        if form.has_changed() and form.is_valid():
+                            if 'status' in form.changed_data:
+                                if form.cleaned_data['status']:
+                                    form.instance.completed = timezone.now()
+                                else:
+                                    form.instance.completed = None
+
+                    formset.save()
+                    # processing multiple formset so flash message handling is aggregated
+                    success_areas.append(current_day.strftime("%Y-%m-%d"))
+
+                else:
+                    #
+                    # form invalid could be many things...
+                    #
+                    messages.add_message(request, messages.ERROR, f'{area_obj.name} changes not saved. {formset.non_form_errors()}')
+
+            else:
+                #
+                # formset didn't change, pass
+                #
+                pass
+
+        if success_areas:
+            areas_string = ', '.join(str(a) for a in success_areas)
+            messages.add_message(request, messages.SUCCESS, f'{areas_string} tasks updated successfully')
+
+        #
+        # redirect/GET back to worksheet
+        #
+        return redirect(reverse_lazy('wi:task_calendarview'))
+
+
+
+
+
+    for loop_day in range(display_days):
+        current_day = start_day + timezone.timedelta(loop_day)
+        days_list.append(current_day)
+        print(f'form creation loop, current day = {current_day}')
+        qs = task.objects.filter(created_by = request.user
+                        ).filter(status = True
+                        ).filter(completed__date = current_day
+                        ).order_by('status', '-priority')
+
+        form_list.append(formsetfactory(queryset=qs,
+                                        prefix = current_day.strftime("%Y-%m-%d"),)
+                                    )
+    #
+    # zip lists together so then can be mutually iterated in the template
+    #
+    task_form_list = zip(days_list, form_list)
+    # convert zip object to list so django template can use |length filter
+    tfl = list(task_form_list)
+
+
+    return render(request, 'wi/task_calendarview.html', { 'task_form_list' : tfl,
+                                                        'domain_name' : render_domain.name,
+                                                        'domain_count' : domains_length,
+                                                        'show_done' : request.session['show_done'], })
+
