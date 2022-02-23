@@ -524,7 +524,7 @@ def task_calendarview(request):
     # calculate the days and start day for the calendar render
     #
     
-    display_weeks = 2
+    display_weeks = 4
     #
     #   given the display weeks, calculate a sunday for a number of weeks ago.
     #   input is number of weeks you want displayed.
