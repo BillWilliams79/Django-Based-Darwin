@@ -5,50 +5,52 @@
 {% block PageTitle %} <br> Task Completed Calendar View {% endblock %} 
 
 {% block mainpagedisplay %}
-<div class="container-xxl" style = "margin-top: 20px;">
+<div class="container-xxl">
     <form action="" method="post">
         {% csrf_token %}
-        <div class="row g-0 my-1 p-0">
-            {% for task_done_date, task_form in task_form_list %}
-                {% if forloop.counter0|divisibleby:7 %}
+        {% for task_done_date, task_form in task_form_list %}
+            {% if forloop.counter0|divisibleby:7 %} {% comment %} creates rows for each week {% endcomment %}
+                {% if forloop.first != True %}
                     </div>
-                    <div class="row g-0 my-1 p-0">
                 {% endif %}
-                <div class="col card mx-1" > <!-- style for card -->
-                    <div class="card-body mx-1 p-0" >
-                        <h6 class="card-title border-bottom m-0 p-0" > 
-                                {{task_done_date|date:"j-M" }}
-                        <p style="float: right; margin-block-end: 0em">
-                                {{task_done_date|date:"l"}}
-                        </p>
+                    <div class="row d-flex g-0 my-1 p-0" style="font-family: Tahoma, sans-serif;"> {% comment %} div for week/row {% endcomment %}
+            {% endif %}
+            <div class="card flex-fill col-xxl-1 col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-12 mx-1" > {% comment %} style for card {% endcomment %}
+                <div class="card-body mx-1 p-0" >
+                    <div class="card-title border-bottom m-0 p-0 mt-1" > 
+                        <h6>
+                            {{task_done_date|date:"j-M" }}
+                            <span style="float: right;">
+                                {{task_done_date|date:"D"}}
+                            </span>
                         </h6>
-                        <p class="card-text m-0 p-0">
-                            {{ task_form.management_form }}
-                            <table class='table table-hover table-sm m-0 p-0' sytle="font-size: 12px">
-                                <tbody>
-                                        {% for form in task_form %}
-                                            <tr style='font-size: 14px;'>
-                                                {% for field in form.visible_fields %}
-                                                    <td class='p-0' style='border: none;'>
-                                                        {{ field }} 
-                                                    </td>
-                                                {% endfor %}
-                                            </tr>                         
-                                        {% endfor %}
-                                </tbody>
-                            </table>
-                            <p class='m-0 p-0'>
-                                {% for form in task_form %}
-                                    {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
+                    </div>
+                    <div class="card-text align-items-stretch m-0 p-0" >
+                        {{ task_form.management_form }}
+                        <table class='table table-hover table-sm m-0 p-0' sytle="font-size: 12px">
+                            <tbody>
+                                    {% for form in task_form %}
+                                        <tr class='p-0' style='font-size: 12px;'>
+                                            {% for field in form.visible_fields %}
+                                                <td class='p-1' style='border: none;'>
+                                                    {{ field }} 
+                                                </td>
+                                            {% endfor %}
+                                        </tr>                         
                                     {% endfor %}
+                            </tbody>
+                        </table>
+                        <p class='m-0 p-0'>
+                            {% for form in task_form %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
                                 {% endfor %}
-                            </p>            
-                        </p>
+                            {% endfor %}
+                        </p>            
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </form>
  </div>
 {% endblock%}
