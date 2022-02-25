@@ -9,13 +9,15 @@
     <form action="" method="post">
         {% csrf_token %}
         {% for task_done_date, task_form in task_form_list %}
-            {% if forloop.counter0|divisibleby:7 %} {% comment %} creates rows for each week {% endcomment %}
+            {% comment %} creates rows for each week {% endcomment %}
+            {% if forloop.counter0|divisibleby:7 %} 
                 {% if forloop.first != True %}
                     </div>
                 {% endif %}
-                    <div class="row d-flex g-0 my-1 p-0" style="font-family: Tahoma, sans-serif;"> {% comment %} div for week/row {% endcomment %}
+                <div class="row d-flex g-0 my-1 p-0" style="font-family: Tahoma, sans-serif;"> {% comment %} div for week/row {% endcomment %}
             {% endif %}
-            <div class="card flex-fill col-xxl-1 col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-12 mx-1" > {% comment %} style for card {% endcomment %}
+            {% comment %} style for card {% endcomment %}
+            <div class="card flex-fill col-xxl=1 col-xl-1 col-lg-1 col-md-6 col-sm-6 col-xs-12 mx-1" > 
                 <div class="card-body mx-1 p-0" >
                     <div class="card-title border-bottom m-0 p-0 mt-1" > 
                         <h6>

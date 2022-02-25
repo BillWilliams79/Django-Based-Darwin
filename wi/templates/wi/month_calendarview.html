@@ -1,0 +1,54 @@
+{% extends "wi/task_base.html" %}
+
+{% block HeadTitle %} Week View {% endblock %} 
+
+{% block PageTitle %}
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
+        Week View - Completed Tasks
+        </h3>
+    </div>
+{% endblock %} 
+
+{% block mainpagedisplay %}
+<div class="month-view container-fluid" >
+    {% for done_date, day_description_list in month_data_list %}
+        {% if forloop.counter0|divisibleby:7 %} 
+            {% if forloop.first != True %}
+                </div>
+            {% endif %}
+            <div class="row mb-2 m-0 p-0 g-0 d-flex" > 
+        {% endif %}
+        <div class="card me-sm-0 me-md-1 m-0 p-0 g-0 flex-fill col-xxl=1 col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12"
+                style="max-width: 50%"> 
+            <div class="card-title m-0 p-1 g-0" 
+                    style="background-color: rgb(232,232,232); font-family: Tahoma, sans-serif;" > 
+                <h6 class="m-0 p-0 g-0">
+                {{done_date|date:"M j"}}
+                <span class="d-block d-lg-none" style="float: right;">
+                {{done_date|date:"D"}}
+                </span>
+                <span class="d-none d-lg-block" style="float: right;">
+                {{done_date|date:"l"}}
+                </span>
+                </h6>
+            </div>
+            <div class="card-meat-of-it m-0 p-0 g-0"
+                    style="font-family: Helvetica, sans-serif; font-size: 12px;" >
+                {% if day_description_list|length == 0 %}
+                    <p class="m-0 p-0 g-0 w-100" style="white-space: normal; border: none">
+                        <br> <br>
+                    </p>
+                {% else %}
+                    {% for description in day_description_list %}
+                        <p class="ps-2 m-0 p-0 g-0 w-100" 
+                            style="white-space: normal; text-indent: -0.25rem;">
+                        {{ description }} 
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+ </div>
+{% endblock%}

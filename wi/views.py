@@ -62,7 +62,7 @@ def task_worksheet(request):
             else:
                 index = index - 1
             request.session['display_domain'] = index
-    
+
     # set render domain after processing domain navigation buttons
     render_domain = domains[index]
 
@@ -94,7 +94,7 @@ def task_worksheet(request):
 
     elif 'navigate_down' in request.POST:
         a = area.objects.get(name=request.POST['navigate_down'])
-        # 
+        #
         # down button = .next()
         # if a.next = None, exit
         # if a.next.hide = False, a.down and exit
@@ -121,7 +121,7 @@ def task_worksheet(request):
     formsetfactory = inlineformset_factory(
                                     area,
                                     task,
-                                    form=WorkSheetForm, 
+                                    form=WorkSheetForm,
                                     extra=5,
                                     can_delete = False,
                                 )
@@ -147,7 +147,7 @@ def task_worksheet(request):
             #
             # process only formsets that changed
             #
-            if formset.has_changed(): 
+            if formset.has_changed():
                 #
                 # handle data valid vs invalid
                 #
@@ -201,7 +201,7 @@ def task_worksheet(request):
         return redirect(reverse_lazy('wi:task_worksheet'))
 
     #
-    # Otherwise, its a GET method call, create the TaskFormset and 
+    # Otherwise, its a GET method call, create the TaskFormset and
     # pass to dispaly template. Also the POST method falls through to here.
     #
     # iterate over all areas creating list of forms to use in the template
@@ -266,8 +266,8 @@ def area_focus(request, pk):
     if request.method == 'POST':
 
         formset = area_formset_factory(
-                                    request.POST, 
-                                    request.FILES, 
+                                    request.POST,
+                                    request.FILES,
                                     queryset=task.objects.filter(created_by=request.user
                                                         ).filter(area=area_obj)
                                     )
@@ -304,7 +304,7 @@ def area_focus(request, pk):
         else:
             # POST called with no changes
             pass
-        
+
         #
         #   redirect/GET after all post processing
         #
@@ -327,21 +327,21 @@ def area_focus(request, pk):
 #
 # MULTI-EDIT for Domain
 #
-@login_required 
+@login_required
 def domain_multiedit(request):
     #
     # function based implementation of modelformsetfactory
     #
     domain_factory = modelformset_factory(
                                 domain,
-                                form=DomainMultiEditForm, 
+                                form=DomainMultiEditForm,
                                 extra=4,
                                 can_delete = True,
                             )
 
     if request.method == 'POST':
 
-        formset = domain_factory(request.POST, 
+        formset = domain_factory(request.POST,
                                 request.FILES)
 
         if formset.has_changed():
@@ -363,7 +363,7 @@ def domain_multiedit(request):
         else:
             # no changes to formset
             pass
-        
+
         #
         # redirect/GET back to area multi-edit
         #
@@ -379,7 +379,7 @@ def domain_multiedit(request):
 #
 # MULTI-EDIT for Area
 #
-@login_required 
+@login_required
 def area_multiedit(request):
     #
     # function based implementation of modelformsetfactory
@@ -388,14 +388,14 @@ def area_multiedit(request):
 
     area_factory = modelformset_factory(
                                 area,
-                                form=AreaMultiEditForm, 
+                                form=AreaMultiEditForm,
                                 extra=4,
                                 can_delete = True,
                             )
 
     if request.method == 'POST':
 
-        formset = area_factory(request.POST, 
+        formset = area_factory(request.POST,
                             request.FILES)
         if formset.has_changed():
 
@@ -450,7 +450,7 @@ def area_multiedit(request):
                                                     ).order_by('domain__name', 'hide', 'name'))
 
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
-    
+
 @login_required
 def task_calendarview(request):
 
@@ -497,7 +497,7 @@ def task_calendarview(request):
             else:
                 index = index - 1
             request.session['display_domain'] = index
-    
+
     # set render domain after processing domain navigation buttons
     render_domain = domains[index]
 
@@ -513,17 +513,17 @@ def task_calendarview(request):
 
     # formsetfactory for use throughout this view
     #
-    # 
+    #
     formsetfactory = modelformset_factory(
                                 task,
-                                form=TaskCalendarForm, 
+                                form=TaskCalendarForm,
                                 extra=0,
                                 can_delete = False,
                             )
     #
     # calculate the days and start day for the calendar render
     #
-    
+
     display_weeks = 4
     #
     #   given the display weeks, calculate a sunday for a number of weeks ago.
@@ -549,7 +549,7 @@ def task_calendarview(request):
         # iterate through all formset, one for each area
         #
         success_areas = list()
-    
+
         for loop_day in range(display_days):
             current_day = start_day + timezone.timedelta(loop_day)
             #
@@ -562,7 +562,7 @@ def task_calendarview(request):
             #
             # process only formsets that changed
             #
-            if formset.has_changed(): 
+            if formset.has_changed():
                 #
                 # handle data valid vs invalid
                 #
@@ -644,3 +644,129 @@ def task_calendarview(request):
                                                         'domain_count' : domains_length,
                                                         'show_done' : request.session['show_done'], })
 
+@login_required
+def month_calendarview(request):
+
+    #
+    # session handling: check and set initial conditions: 0th domain displayed,
+    # do not show_done and seven day session expiry
+    #
+    if not 'display_domain' in request.session:
+        request.session['display_domain'] = 0
+        request.session.set_expiry(7 * 24 * 60 * 60)
+
+    if not 'show_done' in request.session:
+        request.session['show_done'] = False
+
+    #
+    # process domain navigation buttons.
+    #
+    domains = domain.objects.filter(created_by=request.user)
+    #
+    # if the user somehow has no domains, render template setting domain_count to zero
+    # and the template will handle.
+    #
+    if not domains:
+        return render(request, 'wi/task_worksheet.html', {'domain_count' : 0, })
+
+    index = request.session['display_domain']
+    current_domain = domains[index]
+    domains_length = len(domains)
+
+    #
+    # process domain naviagation buttons
+    #
+    if domains_length > 1:
+
+        if 'domain_right' in request.POST:
+            index = index + 1
+            if index == domains_length:
+                index = 0
+            request.session['display_domain'] = index
+
+        elif 'domain_left' in request.POST:
+            if index == 0:
+                index = domains_length - 1
+            else:
+                index = index - 1
+            request.session['display_domain'] = index
+
+    # set render domain after processing domain navigation buttons
+    render_domain = domains[index]
+
+    #
+    # process hide/show button
+    #
+    if 'show_done' in request.POST:
+        request.session['show_done'] = True
+    elif 'hide_done' in request.POST:
+        request.session['show_done'] = False
+
+
+
+    # formsetfactory for use throughout this view
+    #
+    #
+    formsetfactory = modelformset_factory(
+                                task,
+                                form=TaskCalendarForm,
+                                extra=0,
+                                can_delete = False,
+                            )
+    #
+    # calculate the days and start day for the calendar render
+    #
+
+    display_weeks = 4
+    #
+    #   given the display weeks, calculate a sunday for a number of weeks ago.
+    #   input is number of weeks you want displayed.
+    #
+    today = timezone.now()
+
+    adjusted_display_weeks = 0 if display_weeks == 0 else display_weeks - 1
+    daysthisweektoSunday = 0 if dt.datetime.isoweekday(today) == 7 else dt.datetime.isoweekday(today)
+    start_sunday_offset = adjusted_display_weeks * 7 + daysthisweektoSunday
+    start_day = today - timezone.timedelta(days = start_sunday_offset)
+
+    display_days = display_weeks * 7
+
+    all_description_list = list()
+    form_list = list()
+    days_list = list()
+
+
+    #
+    # POST processing
+    #
+    if request.method == 'POST':
+        messages.add_message(request, messages.ERROR, f'Month view called in error as POST')
+        return redirect(reverse_lazy('wi:month_calendarview'))
+
+    for loop_day in range(display_days):
+        day_description_list = list()
+        current_day = start_day + timezone.timedelta(loop_day)
+        days_list.append(current_day)
+
+        # iterate over the day's qs and create a list of descriptions
+        # TODO: current day is GMT not local time zone
+        qs = task.objects.filter(created_by = request.user
+                        ).filter(status = True
+                        ).filter(completed__date = current_day
+                        ).order_by('status', '-priority')
+        for t in qs:
+            day_description_list.append(t.description)
+
+        print(day_description_list)
+        all_description_list.append(day_description_list)
+    #
+    # zip lists together so then can be mutually iterated in the template
+    #
+    month_data_list = zip(days_list, all_description_list)
+    # convert zip object to list so django template can use |length filter
+    mdl = list(month_data_list)
+
+    return render(request, 'wi/month_calendarview.html', { 'month_data_list' : mdl,
+                                                        'domain_name' : render_domain.name,
+                                                        'domain_count' : domains_length,
+                                                        'show_done' : request.session['show_done'], })

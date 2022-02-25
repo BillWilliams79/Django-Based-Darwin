@@ -1,6 +1,6 @@
-<div class="container-xxl nav_bar_template_div">
+<div class="nav-bar-div container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-xxl">
+        <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home:darwin_root' %}"><i class="fa fa-bicycle" aria-hidden="true"></i> Darwin</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -15,7 +15,8 @@
                             <li><a class="dropdown-item" href="{% url 'wi:task_worksheet' %}">Task Display</a></li>
                             <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Area Editor</a></li>
                             <li><a class="dropdown-item" href="{% url 'wi:domain_multiedit' %}">Domain Editor</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:task_calendarview' %}">Calendar View</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wi:month_calendarview' %}">Week View</a></li>
+{% comment %}                             <li><a class="dropdown-item" href="{% url 'wi:task_calendarview' %}">Tasks by day, Calendar View</a></li> {% endcomment %}
                         </ul>
                     </li>
                 </ul>

@@ -19,13 +19,13 @@
         {% include "wi/navbar.html" %}
     {% endblock %}
 
-    <div class="container-xxl page_title_div" >
-        <h3 class="bg-white" style="z-index: 1">
-            {% block PageTitle %}
-                No title supplied by template
-            {% endblock %}
-        </h3>
-    </div>
+    {% block PageTitle %}
+        <div class="page_title_div container-xxl " >
+            <h3 class="bg-white" style="z-index: 1">
+            No title supplied by template
+            </h3>
+        </div>
+    {% endblock %}
 
     {% if messages %}
         {% for message in messages %}
