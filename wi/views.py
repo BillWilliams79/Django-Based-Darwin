@@ -457,7 +457,6 @@ def area_multiedit(request):
 #
 @login_required
 def month_calendarview(request):
-<<<<<<< HEAD
 
     #
     # POST processing isnt' expected so we can post a warning.
@@ -466,8 +465,6 @@ def month_calendarview(request):
         messages.add_message(request, messages.WARNING, f'Month calendar view called in error as POST')
         return redirect(reverse_lazy('wi:month_calendarview'))
 
-=======
->>>>>>> 2f1073d4304f8843a1f502e37e884c2346756b95
     #
     # calculate the days and start day for the calendar render
     #
