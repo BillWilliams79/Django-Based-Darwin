@@ -2,10 +2,16 @@
 
 {% block HeadTitle %} Area Focus  {% endblock %} 
 
-{% block PageTitle %}  <br> {{area_name}} Tasks {% endblock %} 
+{% block PageTitle %}
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
+        {{ area_name }}Tasks
+        </h3>
+    </div>
+{% endblock %} 
 
 {% block mainpagedisplay %}
-    <div class="container-xxl area_focus_main_page">
+    <div class="container-fluid area_focus_main_page">
         <form action="" method="post">
             <div class="container-xxl">
                 {% csrf_token %}

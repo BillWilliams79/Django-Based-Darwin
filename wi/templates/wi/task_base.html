@@ -20,7 +20,7 @@
     {% endblock %}
 
     {% block PageTitle %}
-        <div class="page_title_div container-xxl " >
+        <div class="page_title_div container-fluid" >
             <h3 class="bg-white" style="z-index: 1">
             No title supplied by template
             </h3>
@@ -29,7 +29,8 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="container-xxl alert {{ message.tags }}">
+            <div class="container-fluid mt-3 ms-4 me-4 m-0 p-3 g-0 {{ message.tags }}"
+                    style="border: 1px solid transparent; border-radius:.25rem; width: auto;">
                 {{ message }} 
             </div>
         {% endfor %}

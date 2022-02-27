@@ -5,18 +5,18 @@
 {% block PageTitle %}  {% endblock %} 
 
 {% block mainpagedisplay %}
-<div class="container-xxl">
+<div class="container-fluid">
     {% if not domain_count %}
     <form action="" method="post">
         <br>
-        <p> No domains areas defined for this account. Domains and areas are required to track and manage tasks. Please add one or more domains to continue. </p>
+        <p> No domains defined for this account. Domains and areas are required to track and manage tasks. Please add one or more domains to continue. </p>
         <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:domain_multiedit' %}'; return false;" value="Edit Domains">
         <br>
         <br>
     </form>
     {% else %}
         <form action="" method="post">
-            <h3 class="bg-white" style="z-index: 1; margin-bottom: 20px; margin-top: 21 px">
+            <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1;">
                 {% if domain_count > 1 %}
                     <button type="submit" name="domain_left" class='btn btn-dark btn-sm'> <i class="far fa-arrow-left"></i> </button> 
                 {% endif %}

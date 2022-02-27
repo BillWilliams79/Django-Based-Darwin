@@ -13,8 +13,8 @@ class WorkSheetForm(ModelForm):
             'description' : TextInput(attrs={
                                             'class' : 'w-100',
                                             }
-                                    ),
-       }
+                                        ),
+                    }
 
 #
 # Area Focus Form
@@ -28,7 +28,7 @@ class AreaFocusForm(ModelForm):
     
     class Meta:
         model = task
-        fields = ['priority', 'status', 'description', 'area', ]
+        fields = ['priority', 'status', 'description', 'area', 'completed' ]
         widgets = {
             'priority' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
@@ -57,18 +57,3 @@ class DomainMultiEditForm(ModelForm):
     class Meta:
         model = domain
         fields = ['name', 'retain_completed_tasks', 'created', 'updated']
-
-
-#
-# Tasks Calendar Dispaly Form
-#
-class TaskCalendarForm(ModelForm):
-    class Meta:
-        model = task
-        fields = ['description',]
-        widgets = {
-            'description' : TextInput(attrs={
-                                            'class' : 'w-100 darwin_calendar_text',
-                                            }
-                                    ),
-       }

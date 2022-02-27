@@ -8,18 +8,27 @@
 #
 # page title, pre navbar
 #
-{% block PageTitle %} Welcome {% endblock %} 
+
+{% block PageTitle %}
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
+        Welcome
+        </h3>
+    </div>
+{% endblock %}
 
 #
 # main logic for the page
 #
 {% block mainpagedisplay %}
-<div class="container-xxl">
+<div class="container-fluid">
     <br>
     <h4>Task Management</h4>
     <ul>
-        <li> <a href="{% url 'wi:task_worksheet' %}"> Worksheet Task View </a> </li>
-        <li> <a href="{% url 'wi:area_multiedit' %}"> Edit Task Areas </a> </li>
+        <li> <a href="{% url 'wi:task_worksheet' %}">Tasks Display</a></li>
+        <li> <a href="{% url 'wi:area_multiedit' %}">Areas Editor</a></li>
+        <li> <a href="{% url 'wi:domain_multiedit' %}">Domains Editor</a></li>
+        <li> <a href="{% url 'wi:month_calendarview' %}">Month Calendar View of Completed Task</a></li>
     </ul>
 </div>
 {% endblock%}
