@@ -646,78 +646,11 @@ def task_calendarview(request):
 
 @login_required
 def month_calendarview(request):
-
-    #
-    # session handling: check and set initial conditions: 0th domain displayed,
-    # do not show_done and seven day session expiry
-    #
-    if not 'display_domain' in request.session:
-        request.session['display_domain'] = 0
-        request.session.set_expiry(7 * 24 * 60 * 60)
-
-    if not 'show_done' in request.session:
-        request.session['show_done'] = False
-
-    #
-    # process domain navigation buttons.
-    #
-    domains = domain.objects.filter(created_by=request.user)
-    #
-    # if the user somehow has no domains, render template setting domain_count to zero
-    # and the template will handle.
-    #
-    if not domains:
-        return render(request, 'wi/task_worksheet.html', {'domain_count' : 0, })
-
-    index = request.session['display_domain']
-    current_domain = domains[index]
-    domains_length = len(domains)
-
-    #
-    # process domain naviagation buttons
-    #
-    if domains_length > 1:
-
-        if 'domain_right' in request.POST:
-            index = index + 1
-            if index == domains_length:
-                index = 0
-            request.session['display_domain'] = index
-
-        elif 'domain_left' in request.POST:
-            if index == 0:
-                index = domains_length - 1
-            else:
-                index = index - 1
-            request.session['display_domain'] = index
-
-    # set render domain after processing domain navigation buttons
-    render_domain = domains[index]
-
-    #
-    # process hide/show button
-    #
-    if 'show_done' in request.POST:
-        request.session['show_done'] = True
-    elif 'hide_done' in request.POST:
-        request.session['show_done'] = False
-
-
-
-    # formsetfactory for use throughout this view
-    #
-    #
-    formsetfactory = modelformset_factory(
-                                task,
-                                form=TaskCalendarForm,
-                                extra=0,
-                                can_delete = False,
-                            )
     #
     # calculate the days and start day for the calendar render
     #
-
     display_weeks = 4
+
     #
     #   given the display weeks, calculate a sunday for a number of weeks ago.
     #   input is number of weeks you want displayed.
@@ -732,7 +665,6 @@ def month_calendarview(request):
     display_days = display_weeks * 7
 
     all_description_list = list()
-    form_list = list()
     days_list = list()
 
 
@@ -757,7 +689,6 @@ def month_calendarview(request):
         for t in qs:
             day_description_list.append(t.description)
 
-        print(day_description_list)
         all_description_list.append(day_description_list)
     #
     # zip lists together so then can be mutually iterated in the template
@@ -766,7 +697,4 @@ def month_calendarview(request):
     # convert zip object to list so django template can use |length filter
     mdl = list(month_data_list)
 
-    return render(request, 'wi/month_calendarview.html', { 'month_data_list' : mdl,
-                                                        'domain_name' : render_domain.name,
-                                                        'domain_count' : domains_length,
-                                                        'show_done' : request.session['show_done'], })
+    return render(request, 'wi/month_calendarview.html', { 'month_data_list' : mdl,})
