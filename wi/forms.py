@@ -56,4 +56,4 @@ class AreaMultiEditForm(ModelForm):
 class DomainMultiEditForm(ModelForm):
     class Meta:
         model = domain
-        fields = ['name', 'retain_completed_tasks', 'created', 'updated']
+        fields = ['name', 'retain_completed_tasks', ]
