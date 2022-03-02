@@ -1,7 +1,6 @@
 from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField, Textarea
 from .models import domain, area, task
 
-
 #
 # Tasks Display Form
 #
@@ -10,10 +9,9 @@ class WorkSheetForm(ModelForm):
         model = task
         fields = ['priority', 'status', 'description',]
         widgets = {
-            'description' : TextInput(attrs={
-                                            'class' : 'w-100',
-                                            }
-                                        ),
+            'priority' : CheckboxInput(attrs={'class': 'task-priority d-inline-flex',}),
+            'status' : CheckboxInput(attrs={'class': 'task-status d-inline-flex',}),
+            'description' : Textarea(attrs={'class' : 'task-description w-100 p-0 flex-fill border-0',}),
                     }
 
 #
@@ -30,11 +28,11 @@ class AreaFocusForm(ModelForm):
         model = task
         fields = ['priority', 'status', 'description', 'area', 'completed' ]
         widgets = {
-            'priority' : CheckboxInput(attrs={'class' : 'darwin_text',}),
+            'priority' : CheckboxInput(attrs={'class': 'darwin_text',}),
 
             'status' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
-            'description' : TextInput(attrs={'class' : 'w-100 darwin_text',}),
+            'description' : TextInput(attrs={'class' : 'w-100, darwin_text',}),
  #           'description' : Textarea(attrs={'class' : 'w-100 darwin_text',}),
 
         }
