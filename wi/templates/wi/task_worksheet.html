@@ -42,7 +42,7 @@
             {% else %}
                 <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4", style="overflow: hidden">
                     {% for area_obj, area_form in area_form_list %}
-                        <div class="col card">
+                        <div class="col card" style="font-family: Georgia, serif;">
                             <div class="card-body p-3">
                                 <h5 class="card-title"> <a href="{% url 'wi:task_areafocus' area_obj.id %}", style="text-decoration: none; color: black"> {{area_obj.name}} Tasks  <i class="fas fa-edit fa-xs"></i></a> 
                                     {% if area_form_list|length > 1 %}
@@ -52,22 +52,22 @@
                                 </h5>
                                 <div class="card-text">
                                     {{ area_form.management_form }}
-                                    <table class='table table-hover table-sm' sytle="font-size: 12px">
+                                    <table class='table table-hover table-sm' sytle="font-size: 14px">
                                         <thead> 
-                                            <tr class="d-flex" style='font-size: 12px;'>
+                                            <tr class="d-flex" style='font-size: 14px;font-family: Verdana, sans-serif;'>
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name == "area" %}
                                                     {% else %}
-                                                        <th class="p-0">{{ field.label_tag }} </th>
+                                                        <th class="p-0 fw-normal">{{ field.label_tag }} </th>
                                                     {% endif %}
                                                 {% endfor %}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for form in area_form %}
-                                                <tr class="d-flex pt-1" style='font-size: 12px;'>
+                                                <tr class="d-flex pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
                                                     {% for field in form.visible_fields %}
-                                                        <td class="p-0 border-0">
+                                                        <td class="p-0" style="border: none;">
                                                             {{ field }}
                                                         </td>
                                                     {% endfor %}
@@ -97,41 +97,102 @@
 
     $(document).ready(
         function() {
+            //
+            // textarea by default is 20 rows from Django. 
+            // Work around here is to set rows to 1 so that autoscroll height works.
+            // Otherwise the scollHeight is initially 20rows high.
+            //
             $(".task-description").attr('rows', '1');
             
+            //
+            // set description width to 100%
+            //
             $(".task-description").parent().css('width', '100%');
 
-            $(".task-description").css('height', function() {
-                this.style.height = "";
-                this.style.height = this.scrollHeight + "px";
-            });
 
+            $(".task-description").css('height', function() {
+                this.style.height = this.scrollHeight + "px";
+
+                //tsh = this.scrollHeight;
+                //console.log($(this).css('border-bottom'))
+                //if ($(this).css('border-bottom') == '1px solid rgb(0, 0, 0)') {
+                    // account for bottom border
+                //    tsh++;
+                //    console.log('increment tsh');
+                //} else {
+                    // pass, no border to account for
+                //}
+                //return tsh + "px";
+            });
+                
             $(window).resize(function() {
                 $(".task-description").css('height', function() {
-                    this.style.height = "";
-                    this.style.height = this.scrollHeight + "px";
+                    this.style.height = (this.scrollHeight) + "px";
                 });
             });
-
+            
             $(".task-description").on('input', function() {
-                this.style.height = "";
                 this.style.height = this.scrollHeight + "px";
             });
-
+            
+            $("thead th:first-child" ).css('width', '24px');
             $(".task-priority").css('width', '24px');
             $(".task-status").css('width', '48px');
-            $("thead th:first-child" ).css('width', '24px');
             $("thead th:nth-child(2)" ).css('width', '48px');
-
+            
             $(".task-status").on('click', function() {
-                    var task_description_id = this.id.replace('status', 'description');
-                    $("#" + task_description_id).css('text-decoration', this.checked ? 'line-through' : 'none');
-                    $("#" + task_description_id).prop('disabled', this.checked ? true : false);
+                
+                //
+                // django generates element ids that may include spaces, breaking call to jquery.
+                // however, you can escape the ' ' using \\ as workaround.
+                //
+                var tdi = "";
+                tdi = this.id.replace('status', 'description');
+                tdi = tdi.replace(' ', '\\ ');
+
+                // now that tdi is 'space safe', it can be derefenced as an id selector
+                $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
+                // do we disable too?
+                //$('#' + tdi).prop('disabled', this.checked ? true : false);
+
+                // unused but cool, search and remove all strings code
+                // tdi = tdi.replace(/\s+/g, '');
             });
 
+            // todo: used this css call to execute code to set initial values for description's
+            //       strikethrough. But it's really a cheat to get the selector and run the code.
+            //       not acually doing anything with the ".css" call. 
+            $(".task-status").css('text-docoration', function() {
+                //
+                // django generates element ids that may include spaces, breaking call to jquery.
+                // however, you can escape the ' ' using \\ as workaround.
+                //
+                var tdi = "";
+                tdi = this.id.replace('status', 'description');
+                tdi = tdi.replace(' ', '\\ ');
 
-        }
-        )
+                // now that tdi is 'space safe', it can be derefenced as an id selector
+                $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
+            });
+
+{% comment %}             $(".task-description").css('border-bottom', function() {
+                //$(this).css({'border-top': 'none',
+                //            'border-right': 'none',
+                //            'border-left': 'none'});
+
+                if ($(this).text() == "") {
+                    //$(this).css('border-bottom', '1px solid black');
+                    // add a bottom border causes the height to increase by one and this has to be accounted for.
+                    tsh = this.scrollHeight;
+                    tsh++;
+                    this.style.height = tsh + "px";
+                } else {
+                    //nothing for now
+                    //$(this).css('border-bottom', 'none');
+                }
+            });
+
+ {% endcomment %}        })
         
 </script>
 

@@ -1,10 +1,14 @@
 from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField, Textarea
+from django import forms
 from .models import domain, area, task
 
 #
 # Tasks Display Form
 #
 class WorkSheetForm(ModelForm):
+    #status = forms.BooleanField(label = 'Done', label_suffix = '', )
+    #description = forms.CharField(label_suffix = '', )
+
     class Meta:
         model = task
         fields = ['priority', 'status', 'description',]

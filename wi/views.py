@@ -226,7 +226,8 @@ def task_worksheet(request):
     for area_obj in area_list:
         form_list.append(formsetfactory(queryset=qs,
                                         prefix = area_obj.name,
-                                        instance=area.objects.get(pk=area_obj.id)))
+                                        instance=area.objects.get(pk=area_obj.id),
+                                        form_kwargs={'label_suffix': '',}))
     #
     # zip lists together so then can be mutually iterated in the template
     #
