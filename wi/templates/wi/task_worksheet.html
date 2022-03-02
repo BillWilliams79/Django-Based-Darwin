@@ -108,7 +108,11 @@
             // set description width to 100%
             //
             $(".task-description").parent().css('width', '100%');
-
+            //
+            // recenter the task descriptions into the grey background color of the row/hover
+            //
+            $(".task-description").css('margin-top', '0.25rem');
+            
 
             $(".task-description").css('height', function() {
                 this.style.height = this.scrollHeight + "px";

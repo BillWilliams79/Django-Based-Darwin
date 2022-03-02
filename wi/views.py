@@ -122,7 +122,7 @@ def task_worksheet(request):
                                     area,
                                     task,
                                     form=WorkSheetForm,
-                                    extra=5,
+                                    extra=2,
                                     can_delete = False,
                                 )
 
