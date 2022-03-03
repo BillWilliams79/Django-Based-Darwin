@@ -241,7 +241,7 @@ def task_worksheet(request):
                                                         'show_done' : request.session['show_done'], })
 
 #
-# FOCUS VIEW for Tasks from a single Area
+# Area View
 #
 @login_required
 def area_focus(request, pk):
@@ -326,7 +326,7 @@ def area_focus(request, pk):
                                                         'formset': formset } )
 
 #
-# MULTI-EDIT for Domain
+# Domain Editor
 #
 @login_required
 def domain_multiedit(request):
@@ -379,7 +379,7 @@ def domain_multiedit(request):
     return render(request, 'wi/domain_multiedit.html', {'formset': formset})
 
 #
-# MULTI-EDIT for Area
+# Area Editor
 #
 @login_required
 def area_multiedit(request):
@@ -454,7 +454,7 @@ def area_multiedit(request):
     return render(request, 'wi/area_multiedit.html', {'formset': formset})
 
 #
-# Calendar month view of completed tasks
+# Calendar MONTH view of completed tasks
 #
 @login_required
 def month_calendarview(request):
@@ -510,3 +510,62 @@ def month_calendarview(request):
     mdl = list(month_data_list)
 
     return render(request, 'wi/month_calendarview.html', { 'month_data_list' : mdl,})
+
+#
+# Calendar DAY view of completed tasks
+#
+@login_required
+def day_calendarview(request, date):
+
+    #
+    # POST processing isnt' expected so we can post a warning.
+    #
+    if request.method == 'POST':
+        messages.add_message(request, messages.WARNING, f'Month calendar view called in error as POST')
+        return redirect(reverse_lazy('wi:month_calendarview'))
+
+
+    # correct example usage of .strptime to create a datetime object
+    # dt1 = dt.datetime.strptime('2022-03-02', '%Y-%m-%d')
+    # print(dt1)
+    # mydate = '2022-03-31'
+    # dt2 = dt.datetime.strptime(mydate, '%Y-%m-%d')
+    # print(f'mydate conversion: {dt2}')
+
+    #
+    # Create calendar view with the provided date and render one day.
+    # Voila, day view.
+    #
+    
+ #   start_day = dt.datetime.strptime(slug, '%Y-%m-%d')
+    #todo how does this fail?
+    start_day = date
+    print(start_day)
+    display_days = 1
+    all_description_list = list()
+    days_list = list()
+
+    for loop_day in range(display_days):
+        day_description_list = list()
+        current_day = start_day + timezone.timedelta(loop_day)
+        days_list.append(current_day)
+
+        # iterate over the day's qs and create a list of descriptions
+        qs = task.objects.filter(created_by = request.user
+                        ).filter(status = True
+                        ).filter(completed__date = current_day
+                        ).filter(area__hide = False
+                        ).order_by('status', '-priority')
+        for t in qs:
+            day_description_list.append(t.description)
+
+        all_description_list.append(day_description_list)
+    #
+    # zip lists together so then can be mutually iterated in the template
+    #
+    month_data_list = zip(days_list, all_description_list)
+    # convert zip object to list so django template can use |length filter
+    mdl = list(month_data_list)
+
+    return render(request, 'wi/day_calendarview.html', { 'month_data_list' : mdl,})
+

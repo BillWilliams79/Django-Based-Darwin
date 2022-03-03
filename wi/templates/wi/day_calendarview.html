@@ -1,31 +1,17 @@
 {% extends "wi/task_base.html" %}
 
-{% block HeadTitle %} Week View {% endblock %} 
-
-{% block head_block%}
-    <style>
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        a:hover {
-            text-decoration: none;
-            color: inherit;
-        }
-    </style>
-{% endblock %}
+{% block HeadTitle %} Day View {% endblock %} 
 
 {% block PageTitle %}
     <div class="page-title-div container-fluid">
         <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
-        Week View - Completed Tasks
+        Day View - Completed Tasks {{ date }}
         </h3>
     </div>
 {% endblock %} 
 
 {% block mainpagedisplay %}
-<div class="month-view container-fluid" >
+<div class="day-view container-fluid" >
     {% for done_date, day_description_list in month_data_list %}
         {% if forloop.counter0|divisibleby:7 %} 
             {% if forloop.first != True %}
@@ -39,20 +25,16 @@
                     style="background-color: LightSteelBlue; font-family: Georgia, serif;" > 
                 <h6 class="m-0 p-0 g-0">
 
-                    <a href="{% url 'wi:day_calendarview' done_date|date:'Y-m-d'  %}" style="font-color: black;">
+                    {{done_date|date:"M j"}}
 
-                        <span style="text-decoration: none;">
-                            {{done_date|date:"M j"}}
-                        </span>
+                    <span class="d-block d-lg-none" style="float: right;">
+                    {{done_date|date:"D"}}
+                    </span>
 
-                        <span class="d-block d-lg-none" style="float: right;">
-                        {{done_date|date:"D"}}
-                        </span>
-
-                        <span class="d-none d-lg-block" style="float: right;">
-                        {{done_date|date:"l"}}
-                        </span>
+                    <a class="d-none d-lg-block" style="float: right;" href="{% url 'wi:day_calendarview' done_date|date:'Y-m-d'  %}">
+                    {{done_date|date:"l"}}
                     </a>
+
                 </h6>
             </div>
             <div class="card-meat-of-it m-0 p-0 g-0"

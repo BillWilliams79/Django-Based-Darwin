@@ -1,50 +1,63 @@
-<div class="nav-bar-div container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home:darwin_root' %}"><i class="fa fa-bicycle" aria-hidden="true"></i> Darwin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Tasks
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'wi:task_worksheet' %}">Tasks Display</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:area_multiedit' %}">Areas Editor</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:domain_multiedit' %}">Domains Editor</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wi:month_calendarview' %}">Calendar View</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            {% comment %} <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            {% if user.is_authenticated %}
-            <li><a class="nav-item navbar-link" href="{% url 'logout' %}">Logout</a></li>
-            {% else %}
-            <li><a class="nav-item navbar-link" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
-            {% endif %}
-            </div> {% endcomment %}
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Accounts
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {% if user.is_authenticated %}
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">User Profile</a></li>
-                            {% else %}
-                                <li><a class="dropdown-item" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
-                                <li><a class="dropdown-item" href="{% url 'users:register' %}?next={% url 'home:darwin_root' %}">Register User</a></li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand ps-3" href="{% url 'home:darwin_root' %}">
+        <i class="fa fa-bicycle me-1"></i> Darwin
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto w-100">
+        
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                    Tasks
+                  </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'wi:domain_multiedit' %}">Domain Editor</a>
+                    <a class="dropdown-item" href="{% url 'wi:area_multiedit' %}"> Area Editor</a>
+                </div>
+            </li>
+            
+            <li class="nav-item d-block d-lg-none">
+                <a class="nav-link navbar-light" href="{% url 'wi:task_worksheet' %}"> 
+                    <i class="fas fa-tasks"></i>
+                </a>
+            </li>
+            <li class="nav-item d-block d-lg-none">
+                <a class="nav-link navbar-light" href="{% url 'wi:month_calendarview' %}">
+                    <i class="fas fa-calendar-alt"></i>
+                </a>
+            </li>
+
+            <li class="nav-item d-block d-lg-none">
+                {% now 'Y-m-d' as mytoday %}
+                <a class="nav-link navbar-light" href="{% url 'wi:day_calendarview' mytoday %}">
+                    <i class="fas fa-calendar-day"></i>
+                </a>
+            </li>
+
+
+            <li class="nav-item d-none d-lg-block">
+                <a class="nav-link navbar-light" href="{% url 'wi:task_worksheet' %}">
+                    Task Viewer
+                </a>
+            </li>
+            <li class="nav-item d-none d-lg-block">
+                <a class="nav-link navbar-light" href="{% url 'wi:month_calendarview' %}">
+                    Month View
+                </a>
+            </li>
+            <li class="nav-item d-none d-lg-block">
+                {% now 'Y-m-d' as mytoday %}
+                <a class="nav-link navbar-light" href="{% url 'wi:day_calendarview' mytoday %}">
+                    Day View
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    <li class="nav-item justify-content-end">
+        <a class="nav-link navbar-light justify-content-end"  href="#"> <i class="fas fa-cog"></i> </a>
+    </li>
+
+</nav>
