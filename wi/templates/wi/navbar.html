@@ -1,63 +1,91 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" href="{% url 'home:darwin_root' %}">
-        <i class="fa fa-bicycle me-1"></i> Darwin
+<nav class="navbar navbar-expand flex-row flex-md-column navbar-dark bg-dark" style="height: 100%">
+
+    <a class="navbar-brand ps-3" 
+            href="{% url 'home:darwin_root' %}">
+        
+        <i class="fa fa-bicycle me-1"></i> 
+        <span class="d-inline-flex d-md-flex"> Darwin </span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            {% comment %} aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" {% endcomment %}>
+
         <span class="navbar-toggler-icon"></span>
-      </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto w-100">
+
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="height: 100%">
+        <ul class="navbar-nav mr-auto d-flex flex-row flex-md-column w-100" style="height: 100%">
         
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+ 
+                <a class="nav-link dropdown-toggle" 
+                        href="#" 
+                        id="navbarDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown" >
+
                     Tasks
-                  </a>
-                <div class="dropdown-menu">
+
+                </a>
+
+                <div class="dropdown-menu" >
                     <a class="dropdown-item" href="{% url 'wi:domain_multiedit' %}">Domain Editor</a>
                     <a class="dropdown-item" href="{% url 'wi:area_multiedit' %}"> Area Editor</a>
                 </div>
             </li>
-            
-            <li class="nav-item d-block d-lg-none">
+
+            <li class="nav-item d-flex d-md-none">
                 <a class="nav-link navbar-light" href="{% url 'wi:task_worksheet' %}"> 
                     <i class="fas fa-tasks"></i>
                 </a>
             </li>
-            <li class="nav-item d-block d-lg-none">
+
+            <li class="nav-item d-flex d-md-none">
                 <a class="nav-link navbar-light" href="{% url 'wi:month_calendarview' %}">
                     <i class="fas fa-calendar-alt"></i>
                 </a>
             </li>
 
-            <li class="nav-item d-block d-lg-none">
+            <li class="nav-item d-flex d-md-none">
                 {% now 'Y-m-d' as mytoday %}
                 <a class="nav-link navbar-light" href="{% url 'wi:day_calendarview' mytoday %}">
                     <i class="fas fa-calendar-day"></i>
                 </a>
             </li>
 
-
-            <li class="nav-item d-none d-lg-block">
+            <li class="nav-item d-none d-md-flex">
                 <a class="nav-link navbar-light" href="{% url 'wi:task_worksheet' %}">
-                    Task Viewer
+                    Plan
                 </a>
             </li>
-            <li class="nav-item d-none d-lg-block">
+
+            <li class="nav-item d-none d-md-flex">
                 <a class="nav-link navbar-light" href="{% url 'wi:month_calendarview' %}">
-                    Month View
+                    Month
                 </a>
             </li>
-            <li class="nav-item d-none d-lg-block">
+
+            <li class="nav-item d-none d-md-flex">
                 {% now 'Y-m-d' as mytoday %}
                 <a class="nav-link navbar-light" href="{% url 'wi:day_calendarview' mytoday %}">
-                    Day View
+                    Day
                 </a>
             </li>
-            
+
+            <li class="nav-item justify-content-end">
+                <a class="nav-link navbar-light"  href="#"> <i class="fas fa-cog"></i> </a>
+            </li>
+
         </ul>
+
     </div>
-    <li class="nav-item justify-content-end">
-        <a class="nav-link navbar-light justify-content-end"  href="#"> <i class="fas fa-cog"></i> </a>
-    </li>
+
+
+
+ 
 
 </nav>

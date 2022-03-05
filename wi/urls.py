@@ -8,6 +8,11 @@ from . import views
 #
 app_name = 'wi'
 
+#
+# data convertor to match dates in this format:
+# yyyy-mm-dd or '%Y-%m-%d'
+# created initially for day_calendarview
+#
 class DateConverter:
 
     regex = '[0-9]{4}-[0-9]{2}-[0-9]{2}'
@@ -20,7 +25,7 @@ class DateConverter:
     def to_url(self, value):
         return value
 
-register_converter(DateConverter, 'yyyy')
+register_converter(DateConverter, 'yyyy-mm-dd')
 
 urlpatterns = [
     #
@@ -31,5 +36,5 @@ urlpatterns = [
     path('area', views.area_multiedit, name='area_multiedit'),
     path('domain', views.domain_multiedit, name='domain_multiedit'),
     path('month_calendarview', views.month_calendarview, name='month_calendarview'),
-    path('day_calendarview/<yyyy:date>/', views.day_calendarview, name='day_calendarview'),
+    path('day_calendarview/<yyyy-mm-dd:ymd_date>/', views.day_calendarview, name='day_calendarview'),
  ]

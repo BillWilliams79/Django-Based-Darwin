@@ -16,7 +16,7 @@
     </form>
     {% else %}
         <form action="" method="post">
-            <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1;">
+            <h3 class="bg-white mt-3 mb-3 m-0 p-0 g-0" >
                 {% if domain_count > 1 %}
                     <button type="submit" name="domain_left" class='btn btn-dark btn-sm'> <i class="fas fa-arrow-left"></i> </button> 
                 {% endif %}
@@ -107,6 +107,7 @@
             // Work around here is to set rows to 1 so that autoscroll height works.
             // Otherwise the scollHeight is initially 20rows high.
             //
+            console.log('start process2');
             $(".task-description").attr('rows', '1');
 
             //

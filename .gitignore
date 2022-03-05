@@ -2,8 +2,13 @@
 .DS_Store
 # do not checkin my code workspace
 workspace.code-workspace
-# do not checkin the dev profile pictures. However the default.jpg is required
+# do not checkin the dev profile pictures. However the default.jpg is required, its under /media
 media/profile_pics/**
+
+#ignore the __misc directory and its files. 
+# __misc is just a place to dump files not under source code control. tmp folder
+# use __ to place it at top of vss view out of the way. could have any name
+__misc/**
 
 #the following definitions were extracted from https://github.com/github/gitignore using the python local_settings
 # mainly to correctly ignore pycache and db.

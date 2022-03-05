@@ -515,7 +515,7 @@ def month_calendarview(request):
 # Calendar DAY view of completed tasks
 #
 @login_required
-def day_calendarview(request, date):
+def day_calendarview(request, ymd_date):
 
     #
     # POST processing isnt' expected so we can post a warning.
@@ -539,7 +539,7 @@ def day_calendarview(request, date):
     
  #   start_day = dt.datetime.strptime(slug, '%Y-%m-%d')
     #todo how does this fail?
-    start_day = date
+    start_day = ymd_date
     print(start_day)
     display_days = 1
     all_description_list = list()

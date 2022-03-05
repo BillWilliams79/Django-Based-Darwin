@@ -5,6 +5,7 @@ import ast
 import django_heroku
 
 
+# todo: Seems like the wrong place. Move to proper location or confirm belongs here.
 MESSAGE_TAGS = {
         messages.DEBUG: 'alert-info',
         messages.INFO: 'alert-primary',
@@ -12,7 +13,7 @@ MESSAGE_TAGS = {
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
  }
-
+ 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
