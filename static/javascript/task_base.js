@@ -7,6 +7,9 @@ $(document).ready(
         //
         check_set_grid_sizes();
 
+        console.log('tfs');
+        toggleFullScreen();
+
         //
         // register: app grid setup on resize
         //
@@ -88,4 +91,19 @@ function check_set_grid_sizes() {
     }
 }
 
+function toggleFullScreen() {
+    var doc = window.document;
+    var docEl = doc.documentElement;
+  
+    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+  
+    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      requestFullScreen.call(docEl);
+      console.log('requesting fs');
+    }
+    else {
+      cancelFullScreen.call(doc);
+    }
+  }
 
