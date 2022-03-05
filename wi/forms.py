@@ -13,8 +13,8 @@ class WorkSheetForm(ModelForm):
         model = task
         fields = ['priority', 'status', 'description',]
         widgets = {
-            'priority' : CheckboxInput(attrs={'class': 'task-priority d-inline-flex',}),
-            'status' : CheckboxInput(attrs={'class': 'task-status d-inline-flex',}),
+            'priority' : CheckboxInput(attrs={'class': 'task-priority',}),
+            'status' : CheckboxInput(attrs={'class': 'task-status',}),
             'description' : Textarea(attrs={'class' : 'task-description w-100 p-0 flex-fill border-0',}),
                     }
 
@@ -37,8 +37,7 @@ class AreaFocusForm(ModelForm):
             'status' : CheckboxInput(attrs={'class' : 'darwin_text',}),
 
             'description' : TextInput(attrs={'class' : 'w-100, darwin_text',}),
- #           'description' : Textarea(attrs={'class' : 'w-100 darwin_text',}),
-
+ 
         }
 
 #
