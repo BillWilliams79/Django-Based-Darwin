@@ -37,7 +37,30 @@
                 <button type="submit" class='btn btn-dark btn-sm d-none d-sm-inline-block' name="{{area_obj.name | lower}}">
                     Update
                 </button>
-                
+{% comment %}                 
+                <span style="font-size: 10px;">
+                    <label for="mouse_x">
+                        Mouse X:
+                    </label>
+                    <input type="text" id="mouse_x" size="4">
+
+                    <label for="mouse_x">
+                        Mouse Y:
+                    </label>
+                    <input type="text" id="mouse_y" size="4">
+
+                    <label for="screen_x">
+                        Screen X:
+                    </label>
+                    <input type="text" id="screen_x" size="4">
+
+                    <label for="screen_y">
+                        Screen Y:
+                    </label>
+                    <input type="text" id="screen_y" size="4">
+                </span>
+
+ {% endcomment %}
                 {% if area_form_list|length > 0 %}
                     {% if show_done %}
                         <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> 
@@ -145,12 +168,31 @@
 
     $(document).ready(
         function() {
+            
+/*            
+            $(document).click(function(e) {
+                //
+                // each mouse click updates these fields
+                //
+                $('#mouse_x').val(e.pageX);
+                $('#mouse_y').val(e.pageY);
+            });
+            
+            $(window).resize(function(){
+                //
+                // fill in
+                //
+                $('#screen_x').val($(window).height());
+                $('#screen_y').val($(window).width());
+
+            });
+*/            
+            
             //
             // textarea by default is 20 rows from Django. 
             // Work around here is to set rows to 1 so that autoscroll height works.
             // Otherwise the scollHeight is initially 20rows high.
             //
-            console.log('start process2');
             $(".task-description").attr('rows', '1');
 
             //
@@ -181,7 +223,7 @@
             //$(".task-status").css('font-size', '12px');
             //$(".task-status").css('display', 'block');
             $(".task-status").parent().css('text-align', 'center');
-            $(".task-status").css('text-align', 'center');
+            //$(".task-status").css('text-align', 'center');
             $(".task-status").parent().css('vertical-align', 'middle');
 
             //

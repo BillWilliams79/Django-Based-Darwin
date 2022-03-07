@@ -42,15 +42,15 @@ function check_set_grid_sizes() {
     // when document width is >= 768 it is "large" and the set_divs_large
     // classes are applied to the grid items.
     //
-    if ($(document).width() >= 768) {
+    if ($(window).width() >= 768) {
         //
         // Doc is large, adjust if not large
         //
         if (item1_size != 'large') {
-            
+
             var div_list = $('div').filter(function() {
                 return this.id.match(/item[0-9]/);
-                })
+                });
 
             set_divs_large(div_list);
         }
@@ -63,7 +63,8 @@ function check_set_grid_sizes() {
             
             var div_list = $('div').filter(function() {
                 return this.id.match(/item[0-9]/);
-                })
+                });
+
             set_divs_small(div_list);
         }
     }
@@ -84,7 +85,6 @@ function check_set_grid_sizes() {
         for (div of div_list) {
             $("#" + div.id).removeClass(div.id);
             $("#" + div.id).addClass(div.id + "sm");
-            console.log('SUCCESS SMALL');
         }
     }
 }

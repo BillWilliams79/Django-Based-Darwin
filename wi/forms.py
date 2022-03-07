@@ -49,7 +49,7 @@ class AreaMultiEditForm(ModelForm):
 
     class Meta:
         model = area
-        fields = ['name', 'domain', 'hide', 'created', 'updated']
+        fields = ['name', 'domain', 'hide', 'created',]
 
 #
 # Domain Editor Form
