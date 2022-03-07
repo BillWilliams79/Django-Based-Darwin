@@ -116,16 +116,19 @@
 
                                     {{ area_form.management_form }}
 
-                                    <table class='table table-hover table-sm' sytle="font-size: 14px">
+                                    <table class='table table-sm' sytle="font-size: 14px">
 
                                         <thead> 
-                                            <tr class="d-flex" style='font-size: 12px;font-family: Verdana, sans-serif;'>
+                                            <tr class="d-flex mt-1" style='font-size: 12px;font-family: Verdana, sans-serif;'>
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name == "area" %}
                                                     {% else %}
                                                         <th class="p-0 fw-normal">{{ field.label_tag }} </th>
                                                     {% endif %}
                                                 {% endfor %}
+                                                <th class="p-0 fw-normal float-right"><i class="fas fa-trash-alt"></i></th>
+
+                                                
                                             </tr>
                                         </thead>
 
@@ -169,25 +172,6 @@
     $(document).ready(
         function() {
             
-/*            
-            $(document).click(function(e) {
-                //
-                // each mouse click updates these fields
-                //
-                $('#mouse_x').val(e.pageX);
-                $('#mouse_y').val(e.pageY);
-            });
-            
-            $(window).resize(function(){
-                //
-                // fill in
-                //
-                $('#screen_x').val($(window).height());
-                $('#screen_y').val($(window).width());
-
-            });
-*/            
-            
             //
             // textarea by default is 20 rows from Django. 
             // Work around here is to set rows to 1 so that autoscroll height works.
@@ -216,23 +200,14 @@
             $(".task-description").css('margin-top', '0.25rem');
 
             //
-            // trying to cetner vert/horiz the checkbox inthe card display to no avail.
-            //
-            $(".task-status").parent().css('display', 'block');
-            //$(".task-status").css('height', '100%');
-            //$(".task-status").css('font-size', '12px');
-            //$(".task-status").css('display', 'block');
-            $(".task-status").parent().css('text-align', 'center');
-            //$(".task-status").css('text-align', 'center');
-            $(".task-status").parent().css('vertical-align', 'middle');
-
-            //
             // custom widths for the table in the task card.meatofit
             //
             $("thead th:first-child" ).css('width', '24px');
             $(".task-priority").css('width', '24px');
             $(".task-status").css('width', '48px');
             $("thead th:nth-child(2)" ).css('width', '48px');
+            $("thead th:nth-child(3)" ).css('width', '100%');
+            $("tr td:nth-child(4)" ).addClass('ms-1');
             
             //
             // task complete strikethrough handler, first when user clicks.
@@ -289,8 +264,37 @@
  {% endcomment %}        
     });
 
+            //
+            // trying to cetner vert/horiz the checkbox inthe card display to no avail.
+            //
+            //$(".task-status").parent().css('display', 'block');
+            //$(".task-status").css('height', '100%');
+            //$(".task-status").css('font-size', '12px');
+            //$(".task-status").css('display', 'block');
+            //$(".task-status").parent().css('text-align', 'center');
+            //$(".task-status").css('text-align', 'center');
+            //$(".task-status").parent().css('vertical-align', 'middle');
 
-        
+            /*            
+                $(document).click(function(e) {
+                    //
+                    // each mouse click updates these fields
+                    //
+                    $('#mouse_x').val(e.pageX);
+                    $('#mouse_y').val(e.pageY);
+                });
+                
+                $(window).resize(function(){
+                    //
+                    // fill in
+                    //
+                    $('#screen_x').val($(window).height());
+                    $('#screen_y').val($(window).width());
+
+                });
+            */            
+            
+
 </script>
 
 

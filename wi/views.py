@@ -123,7 +123,7 @@ def task_worksheet(request):
                                     task,
                                     form=WorkSheetForm,
                                     extra=2,
-                                    can_delete = False,
+                                    can_delete = True,
                                 )
 
     #
@@ -320,7 +320,7 @@ def area_focus(request, pk):
         formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
                                                             ).filter(area=area_obj.id
                                                             ).filter(Q(completed__gt = retention_date) | Q(completed = None)
-                                                            ).order_by('status', '-priority', 'updated'))
+                                                            ).order_by('status', '-priority', '-updated'))
 
         return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
                                                         'formset': formset } )
