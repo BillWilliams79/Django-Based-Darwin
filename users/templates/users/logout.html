@@ -1,15 +1,21 @@
 {% extends "wi/task_base.html" %}
 
-{% block HeadTitle %} Darwin Log Out {% endblock %} 
+{% block HeadTitle %} Logged Out {% endblock %} 
 
-{% block PageTitle %} User has been logged out {% endblock %} 
+{% block PageTitle %}
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0">
+
+            The user has been logged out...
+
+        </h3>
+    </div>
+{% endblock %} 
 
 {% block mainpagedisplay %}
 <div class="container-xxl">
     <div class="border-top pt-3">
-        <small class="text-muted">
-            <a href="{% url 'login' %}">Log In Again</a>
-        </small>
+        <a href="{% url 'login' %}">Log In Again?</a>
     </div>
 </div>
 {% endblock%}

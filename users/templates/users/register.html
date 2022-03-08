@@ -1,9 +1,16 @@
 {% extends "wi/task_base.html" %}
 
+{% block HeadTitle %} Register User{% endblock %} 
 
-{% block HeadTitle %} Darwin: Register User{% endblock %} 
+{% block PageTitle %}
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0">
 
-{% block PageTitle %} Register New User {% endblock %} 
+            Register New User 
+
+        </h3>
+    </div>
+{% endblock %} 
 
 {% block mainpagedisplay %}
 {% load crispy_forms_tags %}
@@ -19,7 +26,7 @@
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Already Have An Account? <a class="ml-2" href="#">Log in</a>
+                Already Have An Account? <a class="ml-2" href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Log in</a>
             </small>
         </div>
     </div>

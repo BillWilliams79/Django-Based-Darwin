@@ -1,13 +1,8 @@
-{% extends "home/home_base.html" %}
+{% extends "wi/task_base.html" %}
 
-#
-# Window tab title in the browser
-#
+
 {% block HeadTitle %} Darwin {% endblock %} 
 
-#
-# page title, pre navbar
-#
 
 {% block PageTitle %}
     <div class="page-title-div container-fluid">
@@ -17,9 +12,7 @@
     </div>
 {% endblock %}
 
-#
-# main logic for the page
-#
+
 {% block mainpagedisplay %}
 <div class="container-fluid">
     <br>
@@ -30,5 +23,17 @@
         <li> <a href="{% url 'wi:domain_multiedit' %}">Domains Editor</a></li>
         <li> <a href="{% url 'wi:month_calendarview' %}">Month Calendar View of Completed Task</a></li>
     </ul>
+    <br>
+    <h4>Accounts</h4>
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li><a href="{% url 'users:profile' %}">User Profile</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}?next={% url 'wi:task_worksheet' %}">Login</a></li>
+                <li><a href="{% url 'users:register' %}?next={% url 'home:darwin_root' %}">Register User</a></li>
+            {% endif %}
+        </ul>
+
 </div>
 {% endblock%}

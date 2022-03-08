@@ -116,10 +116,10 @@
 
                                     {{ area_form.management_form }}
 
-                                    <table class='table table-sm' sytle="font-size: 14px">
+                                    <table class='table' sytle="font-size: 14px">
 
                                         <thead> 
-                                            <tr class="d-flex mt-1" style='font-size: 12px;font-family: Verdana, sans-serif;'>
+                                            <tr class="mt-1" style='font-size: 12px; font-family: Verdana, sans-serif;'>
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name == "area" %}
                                                     {% else %}
@@ -127,14 +127,13 @@
                                                     {% endif %}
                                                 {% endfor %}
                                                 <th class="p-0 fw-normal"><i class="fas fa-trash-alt"></i></th>
-
                                                 
                                             </tr>
                                         </thead>
 
                                         <tbody>
                                             {% for form in area_form %}
-                                                <tr class="d-flex pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
+                                                <tr class="pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
                                                     {% for field in form.visible_fields %}
                                                         <td class="p-0" style="border: none;">
                                                             {{ field }}
@@ -143,6 +142,7 @@
                                                 </tr>                         
                                             {% endfor %}
                                         </tbody>
+
                                     </table>
 
                                     <span class="d-block d-sm-none">
@@ -159,7 +159,6 @@
 
                                 </div>
                             </div>
-
                         </div>
                     {% endfor %}
                 </div>
@@ -183,12 +182,19 @@
             // tried different solutions and found this code on: https://stackoverflow.com/a/25621277
             //
             $("textarea").each(function () {
-                this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-              }).on("input", function () {
-                this.style.height = "auto";
-                this.style.height = (this.scrollHeight) + "px";
-              });
+                    this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+                    //console.log('initial height set');
+                }).on("input", function () {
+                    this.style.height = "auto";
+                    this.style.height = (this.scrollHeight) + "px";
+                    //console.log('input height set');
+            });
 
+            //$("window").resize(function () {
+            //    this.style.height = "auto";
+            //    this.style.height = (this.scrollHeight) + "px";
+            //    console.log('resize height set');
+            //});
             //
             // set description width to 100%
             //
@@ -197,7 +203,7 @@
             //
             // recenter the task descriptions into the grey background color of the row/hover
             //
-            //$(".task-description").css('margin-top', '0.25rem');
+            $(".task-description").css('margin-top', '0.25rem');
 
             //
             // custom widths for the table in the task card.meatofit
@@ -205,9 +211,10 @@
             $("thead th:first-child" ).css('width', '24px');
             $(".task-priority").css('width', '24px');
             $(".task-status").css('width', '48px');
-            $("thead th:nth-child(2)" ).css('width', '48px');
-            $("thead th:nth-child(3)" ).css('width', '100%');
-            $("tr td:nth-child(4)" ).addClass('ms-1');
+            $("thead th:nth-child(2)").css('width', '48px');
+            $("thead th:nth-child(3)").css('width', '100%');
+            //$("tr td:nth-child(3)" ).addClass('me-1');
+            //$("tr td:nth-child(4)" ).addClass('ms-1');
             
             //
             // task complete strikethrough handler, first when user clicks.

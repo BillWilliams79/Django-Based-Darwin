@@ -1,8 +1,16 @@
 {% extends "wi/task_base.html" %}
 
-{% block HeadTitle %} Darwin: Profile {% endblock %} 
+{% block HeadTitle %} User Profile {% endblock %} 
 
-{% block PageTitle %}  Profile {% endblock %} 
+{% block PageTitle %}  
+    <div class="page-title-div container-fluid">
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0">
+
+            User Profile
+
+        </h3>
+    </div>
+{% endblock %} 
 
 {% block mainpagedisplay %}
 {% load crispy_forms_tags %}
@@ -22,7 +30,7 @@
               {{ p_form|crispy }}
           </fieldset>
           <div class="form-group">
-              <button class="btn btn-dark" type="submit">Update</button>
+              <button class="mt-2 btn btn-dark btn-sm" type="submit">Update</button>
           </div>
       </form>
 </div>

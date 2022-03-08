@@ -15,7 +15,7 @@ class WorkSheetForm(ModelForm):
         widgets = {
             'priority' : CheckboxInput(attrs={'class': 'task-priority',}),
             'status' : CheckboxInput(attrs={'class': 'task-status',}),
-            'description' : Textarea(attrs={'class' : 'task-description w-100 p-0 flex-fill border-0',}),
+            'description' : Textarea(attrs={'class' : 'task-description w-100 p-0 me-1 border-0',}),
                     }
 
 #
