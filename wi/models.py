@@ -7,7 +7,7 @@ from ordered_model.models import OrderedModel
 class domain(models.Model):
 
     name = models.CharField(
-                max_length=50,
+                max_length=25,
                 null = False,
                 blank = False,
     )

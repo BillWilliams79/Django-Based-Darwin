@@ -257,7 +257,7 @@ def area_focus(request, pk):
 
     area_formset_factory = modelformset_factory(task,
                                                 form=AreaFocusForm,
-                                                extra=5,
+                                                extra=2,
                                                 can_delete=True,
                                             )
 

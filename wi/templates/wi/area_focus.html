@@ -1,29 +1,33 @@
 {% extends "wi/task_base.html" %}
 
-{% block HeadTitle %} Area Focus  {% endblock %} 
+{% block HeadTitle %} Area Focus {% endblock %} 
 
 {% block PageTitle %}
     <div class="page-title-div container-fluid">
-        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
-        {{ area_name }} Tasks
+        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0">
+
+            {{ area_name }} Tasks
+
         </h3>
     </div>
 {% endblock %} 
 
 {% block mainpagedisplay %}
-    <div class="container-fluid area_focus_main_page">
+    <div class="container-fluid">
         <form action="" method="post">
-            <div class="container-xxl">
+            <div>
                 {% csrf_token %}
                 {{ formset.management_form }}
-            </div>
-            <table class='table table-hover'>
+            <div>
+            <table class='table' style="width: min-content;">
                 <thead> 
                     <tr>
                         {% for field in formset.form.visible_fields %}
                             <th>{{ field.label_tag }} </th>
                         {% endfor %}
-                        <th class='col'> Delete? </th>
+
+                        <th> <i class="fas fa-trash-alt"> </th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -38,8 +42,8 @@
             </table>
             <br>
             <!-- Buttons  --->
-            <input type="submit" class='btn btn-dark btn-lg' value="Update All">
-            <input type="submit" class='btn btn-dark btn-lg' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
+            <input type="submit" class='btn btn-dark' value="Update">
+            <input type="submit" class='btn btn-dark' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
 
             <!-- render all the hidden fields -->
             <p>
@@ -50,5 +54,79 @@
             {% endfor %}
             </p>
         </form>
-        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(
+            function() {
+                
+                //
+                // textarea by default is 20 rows from Django. 
+                // Work around here is to set rows to 1 so that autoscroll height works.
+                // Otherwise the scollHeight is initially 20rows high.
+                //
+                $(".task-description").attr('rows', '1');
+    
+                //
+                // tried different solutions and found this code on: https://stackoverflow.com/a/25621277
+                //
+                $("textarea").each(function () {
+                    this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+                  }).on("input", function () {
+                    this.style.height = "auto";
+                    this.style.height = (this.scrollHeight) + "px";
+                  });
+    
+                //
+                // table setting is width: min-content, so width of description
+                // is based on # of cols in the textarea.
+                //
+                $(".task-description").attr('cols', '22');
+    
+                //
+                // custom widths for the table in the task card.meatofit
+                //
+                $("thead th:first-child" ).css('width', '24px');
+                $(".task-priority").css('width', '24px');
+                $(".task-status").css('width', '48px');
+                $("thead th:nth-child(2)" ).css('width', '48px');
+                
+                //
+                // task complete strikethrough handler, first when user clicks.
+                // then also the code for load time parsing/strking through.
+                //
+                $(".task-status").on('click', function() {
+                    
+                    //
+                    // django generates element ids that may include spaces, breaking call to jquery.
+                    // however, you can escape the ' ' using \\ as workaround.
+                    //
+                    var tdi = "";
+                    tdi = this.id.replace('status', 'description');
+                    tdi = tdi.replace(' ', '\\ ');
+    
+                    // now that tdi is 'space safe', it can be derefenced as an id selector
+                    $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
+    
+                });
+    
+                // todo: used this css call to execute code to set initial values for description's
+                //       strikethrough. But it's really a cheat to get the selector and run the code.
+                //       not acually doing anything with the ".css" call. 
+                $(".task-status").css('text-docoration', function() {
+                    //
+                    // django generates element ids that may include spaces, breaking call to jquery.
+                    // however, you can escape the ' ' using \\ as workaround.
+                    //
+                    var tdi = "";
+                    tdi = this.id.replace('status', 'description');
+                    tdi = tdi.replace(' ', '\\ ');
+    
+                    // now that tdi is 'space safe', it can be derefenced as an id selector
+                    $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
+                });
+   
+        });
+    </script>
 {% endblock%}

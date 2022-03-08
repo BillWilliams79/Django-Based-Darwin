@@ -11,7 +11,7 @@
 {% block PageTitle %}
     <div class="page-title-div container-fluid">
         <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0" style="z-index: 1">
-        Domains Editor
+        Domain Editor
         </h3>
     </div>
 {% endblock %} 
@@ -24,13 +24,15 @@
     <form action="" method="post">
         {% csrf_token %}
         {{ formset.management_form }}
-        <table class='table table-hover table-md'>
+        <table class='table' style="width: min-content;">
             <thead> 
                 <tr>
                     {% for field in formset.form %}
-                    <th>{{ field.label_tag }} </th>
+                        <th>{{ field.label_tag }} </th>
                     {% endfor %}
-                    <th> Delete? </th>
+
+                    <th> <i class="fas fa-trash-alt"> </th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -45,8 +47,8 @@
             </table>
         <br>
         <!-- Buttons  --->
-        <input type="submit" class='btn btn-dark btn-lg' value="Update All">
-        <input type="submit" class='btn btn-dark btn-lg' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
+        <input type="submit" class='btn btn-dark' value="Update All">
+        <input type="submit" class='btn btn-dark' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
 
         <!-- render all the hidden fields -->
         <p>
@@ -57,5 +59,16 @@
         {% endfor %}
         </p>
     </form>
-    </div>
-    {% endblock%}
+    <script type="text/javascript">
+
+        $(document).ready(
+            //
+            // set input:text size equal to # charactors allowed
+            //
+            function() {
+                $("input[type=text]").attr('size', '25');
+            });
+
+    </script>
+</div>
+{% endblock%}

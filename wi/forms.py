@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField, Textarea
+from django.forms import ModelForm, TextInput, CheckboxInput, ModelChoiceField, Textarea, DateTimeField, DateTimeInput
 from django import forms
 from .models import domain, area, task
 
@@ -27,16 +27,25 @@ class AreaFocusForm(ModelForm):
     # to limit based on created_by field
     #     
     area = ModelChoiceField(queryset = area.objects.all())
-    
+    #
+    # for this form, display the completed field but show only the date.
+    # This is the best examplar to date to override the model field definitions.
+    #
+    completed = DateTimeField(input_formats=['%b %d, %Y'],
+                                required=False,
+                                widget = DateTimeInput(
+                                                format = '%b %d, %Y',
+                                                attrs = {'size':'14'}))
+
     class Meta:
         model = task
         fields = ['priority', 'status', 'description', 'area', 'completed' ]
         widgets = {
-            'priority' : CheckboxInput(attrs={'class': 'darwin_text',}),
+           # 'priority' : CheckboxInput(attrs={'class': 'darwin_text',}),
 
-            'status' : CheckboxInput(attrs={'class' : 'darwin_text',}),
+            'status' : CheckboxInput(attrs={'class' : 'task-status',}),
 
-            'description' : TextInput(attrs={'class' : 'w-100, darwin_text',}),
+            'description' : Textarea(attrs={'class' : 'task-description p-0 border-0',}),
  
         }
 
