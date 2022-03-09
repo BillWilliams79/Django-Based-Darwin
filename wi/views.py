@@ -218,6 +218,7 @@ def task_worksheet(request):
     #
     qs = task.objects.filter(created_by = request.user)
 
+    # no filter required to show all
     if not request.session['show_done']:
         qs = qs.filter(Q(completed__gt = retention_date) | Q(completed = None))
 
@@ -226,8 +227,7 @@ def task_worksheet(request):
     for area_obj in area_list:
         form_list.append(formsetfactory(queryset=qs,
                                         prefix = area_obj.name,
-                                        instance=area.objects.get(pk=area_obj.id),
-                                        form_kwargs={'label_suffix': '',}))
+                                        instance=area.objects.get(pk=area_obj.id),))
     #
     # zip lists together so then can be mutually iterated in the template
     #
@@ -245,6 +245,20 @@ def task_worksheet(request):
 #
 @login_required
 def area_focus(request, pk):
+
+    #
+    # instantiate session defaults if none 
+    #
+    if not 'show_done' in request.session:
+        request.session['show_done'] = False
+
+    #
+    # process hide/show button
+    #
+    if 'show_done' in request.POST:
+        request.session['show_done'] = True
+    elif 'hide_done' in request.POST:
+        request.session['show_done'] = False
 
     area_obj = area.objects.get(pk=pk)
 
@@ -266,24 +280,23 @@ def area_focus(request, pk):
     #
     if request.method == 'POST':
 
-        formset = area_formset_factory(
-                                    request.POST,
-                                    request.FILES,
-                                    queryset=task.objects.filter(created_by=request.user
-                                                        ).filter(area=area_obj)
-                                    )
+        formset = area_formset_factory(request.POST,
+                                        request.FILES,
+                                        queryset=task.objects.filter(created_by=request.user
+                                                            ).filter(area=area_obj))
 
         if formset.has_changed():
             if formset.is_valid():
                 #
                 # We have good data, save and return to listview
                 #
-
+                print('formset has changed and is valid')
                 for form in formset:
                     if not form.instance.created_by:
                         form.instance.created_by = request.user
 
                     if form.has_changed() and form.is_valid():
+                        print(f'areafocus: {form.changed_data}')
                         #
                         # set/clear completed date for changed fields
                         #
@@ -317,13 +330,21 @@ def area_focus(request, pk):
         #
         retention_date = timezone.now() - timezone.timedelta(days = area_obj.domain.retain_completed_tasks)
 
-        formset = area_formset_factory(queryset=task.objects.filter(created_by=request.user
-                                                            ).filter(area=area_obj.id
-                                                            ).filter(Q(completed__gt = retention_date) | Q(completed = None)
-                                                            ).order_by('status', '-priority', '-updated'))
+        qs = task.objects.filter(created_by=request.user
+                        ).filter(area=area_obj.id)
+
+        # no filter required to show all
+        if not request.session['show_done']:
+            qs = qs.filter(Q(completed__gt = retention_date) | Q(completed = None))
+
+        qs = qs.order_by('status', '-priority', '-updated')
+
+        formset = area_formset_factory(queryset=qs)
 
         return render(request, 'wi/area_focus.html', {'area_name' : area_obj.name,
-                                                        'formset': formset } )
+                                                        'formset': formset,
+                                                        'show_done' : request.session['show_done'],
+                                                         } )
 
 #
 # Domain Editor

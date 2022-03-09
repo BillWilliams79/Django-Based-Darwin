@@ -31,11 +31,12 @@ class AreaFocusForm(ModelForm):
     # for this form, display the completed field but show only the date.
     # This is the best examplar to date to override the model field definitions.
     #
-    completed = DateTimeField(input_formats=['%b %d, %Y'],
+    completed = DateTimeField(input_formats=['%b %d, %Y %H:%M:%S'],
                                 required=False,
                                 widget = DateTimeInput(
-                                                format = '%b %d, %Y',
-                                                attrs = {'size':'14'}))
+                                                format = '%b %d, %Y %H:%M:%S',
+                                                attrs = {'size':'14',
+                                                         'class': 'task-completed',}))
 
     class Meta:
         model = task

@@ -9,7 +9,10 @@
     {% if not domain_count %}
         <form action="" method="post">
             <br>
-            <p> No domains defined for this account. Domains and areas are required to track and manage tasks. Please add one or more domains to continue. </p>
+            <p> No domains defined for this account. Domains and areas are required to track and manage tasks. 
+                <br>
+                <br>
+                Please add one or more domains to continue. </p>
             <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:domain_multiedit' %}'; return false;" 
                 value="Edit Domains">
             <br>
@@ -80,14 +83,18 @@
             {% if area_form_list|length == 0 %}
 
                 <br>
-                <p> No areas defined for this domain. Areas are required to track and manage tasks. Please add areas to continue. </p>
+                <p> No areas defined for this domain. Areas are required to track and manage tasks. 
+                    <br>
+                    <br>
+                    Please add areas to continue. </p>
                 <input type="button" class='btn btn-dark btn' onclick="window.location='{% url 'wi:area_multiedit' %}'; return false;" value="Edit Areas">
                 <br>
                 <br>
 
             {% else %}
 
-                <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4", style="overflow: hidden">
+                <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4" 
+                        style="overflow: hidden">
 
                     {% for area_obj, area_form in area_form_list %}
 
@@ -106,7 +113,7 @@
                                         </a>
 
                                         {% if area_form_list|length > 1 %}
-                                            <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-down fa-lg"></i> </button>
+                                            <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right; height" value="{{area_obj.name}}"> <i class="fas fa-caret-down fa-lg"></i> </button>
                                             <button type="submit" name="navigate_up" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-up fa-lg"></i> </button>
                                         {% endif %}
                                     </h5>
@@ -183,11 +190,9 @@
             //
             $("textarea").each(function () {
                     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-                    //console.log('initial height set');
                 }).on("input", function () {
                     this.style.height = "auto";
                     this.style.height = (this.scrollHeight) + "px";
-                    //console.log('input height set');
             });
 
             //$("window").resize(function () {
@@ -199,6 +204,22 @@
             // set description width to 100%
             //
             $(".task-description").parent().css('width', '100%');
+
+            //
+            // Django adds a field suffix of ':' to each field name.
+            // While there is a Django method to remove these, this is much easier.
+            //
+            $('th').each(function() {
+                //
+                // if the string lenght is 0, then the label is icon
+                //
+                var th = $(this);
+                if (th.text().length > 0) {
+                    var th_text = th.text().replace(':','');
+                    th.text(th_text);
+                }
+            });
+
 
             //
             // recenter the task descriptions into the grey background color of the row/hover
@@ -250,6 +271,8 @@
                 // now that tdi is 'space safe', it can be derefenced as an id selector
                 $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
             });
+
+
 
 {% comment %}             $(".task-description").css('border-bottom', function() {
                 //$(this).css({'border-top': 'none',

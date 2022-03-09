@@ -3,34 +3,42 @@
 {% block HeadTitle %} Area Focus {% endblock %} 
 
 {% block PageTitle %}
-    <div class="page-title-div container-fluid">
-        <h3 class="bg-white mt-4 mb-3 m-0 p-0 g-0">
-
-            {{ area_name }} Tasks
-
-        </h3>
-    </div>
 {% endblock %} 
 
 {% block mainpagedisplay %}
+
     <div class="container-fluid">
         <form action="" method="post">
-            <div>
-                {% csrf_token %}
-                {{ formset.management_form }}
-            <div>
+
+            <h3 class="bg-white mt-4 mb-3 p-0 g-0">
+
+                    {{ area_name }} Tasks
+
+                {% if show_done %}
+                    <button type="submit" name="hide_done" class='btn ms-5 btn-dark btn-sm'> 
+                        Hide Done
+                    </button>
+                {% else %}
+                    <button type="submit" name="show_done" class='btn ms-5 btn-dark btn-sm float-right'>
+                        Show Done
+                    </button>
+                {% endif %}
+            </h3>
+
+            {% csrf_token %}
+            {{ formset.management_form }}
             <table class='table' style="width: min-content;">
-                <thead> 
-                    <tr>
+                <thead style='font-size: 12px; font-family: Verdana, sans-serif;'> 
+                    <tr  >
                         {% for field in formset.form.visible_fields %}
-                            <th>{{ field.label_tag }} </th>
+                            <th class="fw-normal">{{ field.label_tag }} </th>
                         {% endfor %}
 
-                        <th> <i class="fas fa-trash-alt"> </th>
+                        <th><i class="fas fa-trash-alt"></th>
 
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style='font-size: 14px; font-family: Verdana, sans-serif;'>
                         {% for form in formset %}
                         <tr>
                             {% for field in form.visible_fields %}
@@ -40,19 +48,17 @@
                         {% endfor %}
                 </tbody>
             </table>
-            <br>
-            <!-- Buttons  --->
-            <input type="submit" class='btn btn-dark' value="Update">
-            <input type="submit" class='btn btn-dark' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
 
-            <!-- render all the hidden fields -->
-            <p>
+            <input type="submit" class='btn btn-dark mt-3' value="Update">
+            <input type="submit" class='btn btn-dark mt-3' onclick="window.location='{% url 'wi:task_worksheet' %}'; return false;" value="Cancel">
+
+            <span>
             {% for form in formset %}
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }} <br>
                 {% endfor %}
             {% endfor %}
-            </p>
+            </span>
         </form>
     </div>
 
@@ -67,16 +73,32 @@
                 // Otherwise the scollHeight is initially 20rows high.
                 //
                 $(".task-description").attr('rows', '1');
+                $(".task-completed").attr('size', '22');
+
+                //
+                // Django adds a field suffix of ':' to each field name.
+                // While there is a Django method to remove these, this is much easier.
+                //
+                $('th').each(function() {
+                    //
+                    // if the string lenght is 0, then the label is icon
+                    //
+                    var th = $(this);
+                    if (th.text().length > 0) {
+                        var th_text = th.text().replace(':','');
+                        th.text(th_text);
+                    }
+                });
     
                 //
                 // tried different solutions and found this code on: https://stackoverflow.com/a/25621277
                 //
                 $("textarea").each(function () {
                     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-                  }).on("input", function () {
+                }).on("input", function () {
                     this.style.height = "auto";
                     this.style.height = (this.scrollHeight) + "px";
-                  });
+                });
     
                 //
                 // table setting is width: min-content, so width of description

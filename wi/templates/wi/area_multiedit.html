@@ -70,6 +70,23 @@
                 $("input[type=text]").attr('size', '25');
             });
 
+            //
+            // Django adds a field suffix of ':' to each field name.
+            // While there is a Django method to remove these, this is much easier.
+            //
+            $('th').each(function() {
+                //
+                // if the string lenght is 0, then the label is icon
+                //
+                var th = $(this);
+                if (th.text().length > 0) {
+                    var th_text = th.text().replace(':','');
+                    th.text(th_text);
+                }
+            });
+
+
+
     </script>
 
 {% endblock%}

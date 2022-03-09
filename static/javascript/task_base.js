@@ -7,12 +7,16 @@ $(document).ready(
         //
         check_set_grid_sizes();
 
-
         //
         // register: app grid setup on resize
         //
         $(window).resize(check_set_grid_sizes);
-
+        
+        //
+        // After grid is set, make visible
+        //
+        console.log('unhide');
+        $('html').css('visibility', 'visible');
     });
 
 //
@@ -87,5 +91,7 @@ function check_set_grid_sizes() {
             $("#" + div.id).addClass(div.id + "sm");
         }
     }
+
+
 }
 
