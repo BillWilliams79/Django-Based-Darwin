@@ -4,6 +4,8 @@
 workspace.code-workspace
 # do not checkin the dev profile pictures. However the default.jpg is required, its under /media
 media/profile_pics/**
+# required to collect static, don't checkin these files as heroku will execute the same process
+#staticfiles/**
 
 #ignore the __misc directory and its files. 
 # __misc is just a place to dump files not under source code control. tmp folder
