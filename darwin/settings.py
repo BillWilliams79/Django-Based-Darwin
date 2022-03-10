@@ -31,7 +31,7 @@ DEBUG = (os.environ.get('DARWIN_DEBUG') == 'True')
 
 #literal_eval converts the string that looks like a list into a list.
 ALLOWED_HOSTS = ast.literal_eval(os.environ.get('DARWIN_HOSTS'))
-
+CSRF_TRUSTED_ORIGINS = ast.literal_eval(os.environ.get('DARWIN_ORIGINS'))
 
 # Application definition
 
@@ -165,5 +165,43 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+
+""" 
+# pulled this from https://stackoverflow.com/a/37218484
+# didn't have any errors at the time, try when you have some error
+# EXAMINE THE LOG SETTINGS LOCATION ESP FOR HEROKU
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/Users/billw/desktop/darwin_root/mysite.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'MYAPP': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    }
+} """
 
 django_heroku.settings(locals())
