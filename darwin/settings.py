@@ -167,7 +167,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 
 
-""" 
+
 # pulled this from https://stackoverflow.com/a/37218484
 # didn't have any errors at the time, try when you have some error
 # EXAMINE THE LOG SETTINGS LOCATION ESP FOR HEROKU
@@ -202,6 +202,6 @@ LOGGING = {
             'level': 'DEBUG',
         },
     }
-} """
+}
 
 django_heroku.settings(locals())

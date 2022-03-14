@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
 from .models import domain, area, task
+from django.http import JsonResponse
 import datetime as dt
 
 from django.contrib import messages
@@ -123,7 +124,7 @@ def task_worksheet(request):
                                     task,
                                     form=WorkSheetForm,
                                     extra=2,
-                                    can_delete = True,
+                                    can_delete = False,
                                 )
 
     #
@@ -589,4 +590,24 @@ def day_calendarview(request, ymd_date):
     mdl = list(month_data_list)
 
     return render(request, 'wi/day_calendarview.html', { 'month_data_list' : mdl,})
+
+#
+# Area Editor
+#
+@login_required
+def task_delete(request):
+    
+    print(request.POST)
+    print(request.POST['id'])
+
+    if request.method == 'POST':
+        
+        t = task.objects.get(pk = request.POST['id'])
+        print(t.description)
+        t.delete()
+        return JsonResponse(data = {}, status=200)
+    
+    else:
+        return JsonResponse(status=400)
+
 

@@ -5,6 +5,26 @@
 {% block PageTitle %}  {% endblock %} 
 
 {% block mainpagedisplay %}
+<div class="modal" id="staticBackdrop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          you pressed that button!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="delete-task-button btn btn-primary" data-bs-dismiss="modal" value="">
+            Delete Task
+          </button>
+        </div>
+      </div>
+    </div>
+</div>
+
 <div class="container-fluid">
     {% if not domain_count %}
         <form action="" method="post">
@@ -29,7 +49,7 @@
                     </button> 
                 {% endif %}
                 
-                {{ domain_name }} Tasks
+                {{ domain_name }} 
 
                 {% if domain_count > 1 %}
                     <button type="submit" name="domain_right" class='btn btn-dark btn-sm'> 
@@ -40,30 +60,7 @@
                 <button type="submit" class='btn btn-dark btn-sm d-none d-sm-inline-block' name="{{area_obj.name | lower}}">
                     Update
                 </button>
-{% comment %}                 
-                <span style="font-size: 10px;">
-                    <label for="mouse_x">
-                        Mouse X:
-                    </label>
-                    <input type="text" id="mouse_x" size="4">
 
-                    <label for="mouse_x">
-                        Mouse Y:
-                    </label>
-                    <input type="text" id="mouse_y" size="4">
-
-                    <label for="screen_x">
-                        Screen X:
-                    </label>
-                    <input type="text" id="screen_x" size="4">
-
-                    <label for="screen_y">
-                        Screen Y:
-                    </label>
-                    <input type="text" id="screen_y" size="4">
-                </span>
-
- {% endcomment %}
                 {% if area_form_list|length > 0 %}
                     {% if show_done %}
                         <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> 
@@ -100,7 +97,7 @@
 
                         <div class="card col" style="font-family: Verdana, serif;">
 
-                            <div class="card-body p-3">
+                            <div class="card-body p-2">
 
                                 <div class="card-title" >
                                     <h5>
@@ -108,7 +105,7 @@
                                                 style="text-decoration: none; color: black">
 
                                                 {{area_obj.name}}   
-                                                <i class="fas fa-edit fa-xs"></i>
+                                                {% comment %} <i class="fas fa-edit fa-xs"></i> {% endcomment %}
 
                                         </a>
 
@@ -125,8 +122,8 @@
 
                                     <table class='table' sytle="font-size: 14px">
 
-                                        <thead> 
-                                            <tr class="mt-1" style='font-size: 12px; font-family: Verdana, sans-serif;'>
+                                        <thead style="border:none;"> 
+                                            {% comment %}tr class="mt-1" style='font-size: 12px; font-family: Verdana, sans-serif;'>
                                                 {% for field in area_form.form.visible_fields %}
                                                     {% if field.name == "area" %}
                                                     {% else %}
@@ -135,17 +132,32 @@
                                                 {% endfor %}
                                                 <th class="p-0 fw-normal"><i class="fas fa-trash-alt"></i></th>
                                                 
-                                            </tr>
+                                            </tr> {% endcomment %}
                                         </thead>
 
-                                        <tbody>
+                                        <tbody style="border: none;">
                                             {% for form in area_form %}
                                                 <tr class="pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
+
                                                     {% for field in form.visible_fields %}
                                                         <td class="p-0" style="border: none;">
                                                             {{ field }}
                                                         </td>
                                                     {% endfor %}
+
+                                                    <td class="p-0" style="border: none;">
+                                                        {% comment %} <button type="submit" class="task-delete" style="border: none; background-color: white;" name="task_delete" value="{{form.instance.id}}"> <i class="fas fa-trash-alt"></i> </button> {% endcomment %}
+                                                        <button type="button" 
+                                                                class="task-delete"
+                                                                style="border: none; background-color: white;" 
+                                                                value="{{ form.instance.id }}"
+                                                                data-task-id="{{ form.instance.id }}"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#staticBackdrop">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                                                                                
+                                                    </td>
                                                 </tr>                         
                                             {% endfor %}
                                         </tbody>
@@ -165,6 +177,7 @@
                                     </span>
 
                                 </div>
+
                             </div>
                         </div>
                     {% endfor %}
@@ -172,7 +185,12 @@
             {% endif %}
         </form>
     {% endif %}
+
 </div>
+
+<!-- Modal -->
+
+
 <script type="text/javascript">
 
     $(document).ready(
@@ -186,7 +204,9 @@
             $(".task-description").attr('rows', '1');
 
             //
+            // textarea auto-height: at init and on any input.
             // tried different solutions and found this code on: https://stackoverflow.com/a/25621277
+            // TODO: what about resize on width change? need to verify.
             //
             $("textarea").each(function () {
                     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
@@ -195,34 +215,107 @@
                     this.style.height = (this.scrollHeight) + "px";
             });
 
-            //$("window").resize(function () {
-            //    this.style.height = "auto";
-            //    this.style.height = (this.scrollHeight) + "px";
-            //    console.log('resize height set');
-            //});
+            //
+            // task delete: populate task id from delete button to modal delete button's value.
+            // used for delete call
+            // 
+            $(document).on("click", ".task-delete", function () {
+                var task_id = $(this).data('taskId');
+                $(".delete-task-button").val(task_id);
+            });
+
+            $("tr").on('click', function(event) {
+                console.log('go red');
+                console.log(event.currentTarget.tagName);
+                if (this.style.color = "red") {
+                    this.style.color = "blue";
+                } else {
+                    this.style.color = "red";
+                }
+            });
+
+
+{% comment %}             ).css('background-color', 'red');
+
+            $( document.body ).click(function() {
+                $( "div" ).each(function( i ) {
+                  if ( this.style.color !== "blue" ) {
+                    this.style.color = "blue";
+                  } else {
+                    this.style.color = "";
+                  }
+                });
+              });
+ {% endcomment %}            //
+            // task delete: button handler on modal that executes ajax to delete button.
+            //
+            $(".delete-task-button").on("click", 
+                function(event) {
+
+                    console($(this)
+
+                    );
+
+                    $.ajax({
+                        data: { 'csrfmiddlewaretoken': "{{ csrf_token }}",
+                                id : $(event.target).val(),},
+                        type: "POST",
+                        url: "{% url 'wi:task_delete' %}",
+                        // on success
+                        success: function (response) {
+                            //
+                            // TODO: implement disable and hide of the removed item.
+                            //
+                            console.log('target.nodeName: ' + 
+                                    event.target.nodeName); // prints Button
+                                    
+                            console.log('currentTarget.nodeName: ' + 
+                                    event.currentTarget.nodeName); // returns Button
+
+                            console.log('cT.nodeType: ' + 
+                                    event.currentTarget.nodeType); //returns 1. A 1 equals element type like p or div
+
+                            console.log('cT.nodeValue: ' + 
+                                    event.currentTarget.nodeValue); // 
+
+                            console.log('cT.baseURI: ' + 
+                                    event.currentTarget.baseURI); //returns the current url
+
+                            console.log('bg color: ' + 
+                                $(event.currentTarget).parent().css('background-color'));
+
+                            console.log('bg color: ' + 
+                                $(event.currentTarget).parent().css('background-color'));
+
+
+                                    //$(event.target).css('background-color' : 'red');
+                            //learning$(event.target).css('background-color': 'red');
+                            //console.log($('ct.val(): ' + $(event.currentTarget).val());
+                            //console.log(type(event.currentTarget));
+                            //console.log(dir(event.currentTarget));
+                            alert("Delete good");
+                        },
+                        // on error
+                        error: function (response) {
+                            // alert the error if any error occured
+                            alert("delete bad");
+                            //console.log(response.responseJSON.errors)
+                            console.log('ajax error');
+                        }
+                    });
+
+                    return false;
+                }
+            );
+
+
             //
             // set description width to 100%
             //
             $(".task-description").parent().css('width', '100%');
 
             //
-            // Django adds a field suffix of ':' to each field name.
-            // While there is a Django method to remove these, this is much easier.
-            //
-            $('th').each(function() {
-                //
-                // if the string lenght is 0, then the label is icon
-                //
-                var th = $(this);
-                if (th.text().length > 0) {
-                    var th_text = th.text().replace(':','');
-                    th.text(th_text);
-                }
-            });
-
-
-            //
-            // recenter the task descriptions into the grey background color of the row/hover
+            // recenter the task descriptions in the div
             //
             $(".task-description").css('margin-top', '0.25rem');
 
@@ -256,10 +349,12 @@
 
             });
 
-            // todo: used this css call to execute code to set initial values for description's
-            //       strikethrough. But it's really a cheat to get the selector and run the code.
-            //       not acually doing anything with the ".css" call. 
-            $(".task-status").css('text-docoration', function() {
+
+
+            //
+            // Set inital strikethrough state for task.description
+            //
+            $(".task-status").each(function() {
                 //
                 // django generates element ids that may include spaces, breaking call to jquery.
                 // however, you can escape the ' ' using \\ as workaround.
@@ -274,58 +369,160 @@
 
 
 
-{% comment %}             $(".task-description").css('border-bottom', function() {
-                //$(this).css({'border-top': 'none',
-                //            'border-right': 'none',
-                //            'border-left': 'none'});
 
-                if ($(this).text() == "") {
-                    //$(this).css('border-bottom', '1px solid black');
-                    // add a bottom border causes the height to increase by one and this has to be accounted for.
-                    tsh = this.scrollHeight;
-                    tsh++;
-                    this.style.height = tsh + "px";
-                } else {
-                    //nothing for now
-                    //$(this).css('border-bottom', 'none');
-                }
-            });
 
- {% endcomment %}        
+    }); // $(document).ready(....
+
+
+//########################################################################
+//
+// Commented code samples section to be removed after at least one commit.
+//
+
+    {% comment %}
+    //
+    // vanilla JS that brings focus to your modal, didn't wokr becuase of the Ids
+    //
+    var myModal = document.getElementById('.modal');
+    var myInput = document.getElementById('.delete-task-button ');
+
+    myModal.addEventListener('.modal', function () {
+        //myInput.focus();
+        //console.log('event firing for modal or delete button');
+    });
+    {% endcomment %}
+
+
+
+    {% comment %}
+    //
+    // testing click handler before using modal for delete.
+    //
+    $(".task-delete").on("click", function () {
+        alert("Would you like to delete task #" + this.value + "?");
+        return false;
+    }); 
+    {% endcomment %}
+
+
+    {% comment %}             
+    //
+    // attempting set a bottom border in new input lines and adjust scroll heights
+    // stopped before could make the scroll height logic work properly
+    //
+    $(".task-description").css('border-bottom', function() {
+        //$(this).css({'border-top': 'none',
+        //            'border-right': 'none',
+        //            'border-left': 'none'});
+
+        if ($(this).text() == "") {
+            //$(this).css('border-bottom', '1px solid black');
+            // add a bottom border causes the height to increase by one and this has to be accounted for.
+            tsh = this.scrollHeight;
+            tsh++;
+            this.style.height = tsh + "px";
+        } else {
+            //nothing for now
+            //$(this).css('border-bottom', 'none');
+        }
+    });
+    {% endcomment %}        
+
+
+    {% comment %}
+    //
+    // trying to cetner vert/horiz the checkbox inthe card display to no avail.
+    // individually these operations worked as advertized but the checkbox never moved.
+    //
+    $(".task-status").parent().css('display', 'block');
+    $(".task-status").css('height', '100%');
+    $(".task-status").css('font-size', '12px');
+    $(".task-status").css('display', 'block');
+    $(".task-status").parent().css('text-align', 'center');
+    $(".task-status").css('text-align', 'center');
+    $(".task-status").parent().css('vertical-align', 'middle');
+    {% endcomment %}        
+
+
+    {% comment %}
+    //
+    // Ajax learning: code to set mouse and screen data to inputs on the screen.
+    // inputs identifed by their IDs are below
+    //            
+    $(document).click(function(event) {
+        //
+        // each mouse click updates these fields
+        //
+        $('#mouse_x').val(event.pageX);
+        $('#mouse_y').val(event.pageY);
+    });
+        
+    $(window).resize(function(){
+        //
+        // fill in window sizes
+        //
+        $('#screen_x').val($(window).height());
+        $('#screen_y').val($(window).width());
+        // document sizes
+        $('#document_x').val($(document).height());
+        $('#document_y').val($(document).width());
+
     });
 
-            //
-            // trying to cetner vert/horiz the checkbox inthe card display to no avail.
-            //
-            //$(".task-status").parent().css('display', 'block');
-            //$(".task-status").css('height', '100%');
-            //$(".task-status").css('font-size', '12px');
-            //$(".task-status").css('display', 'block');
-            //$(".task-status").parent().css('text-align', 'center');
-            //$(".task-status").css('text-align', 'center');
-            //$(".task-status").parent().css('vertical-align', 'middle');
+    <span style="font-size: 10px;">
+        <label for="mouse_x">
+            Mouse X:
+        </label>
+        <input type="text" id="mouse_x" size="4">
 
-            /*            
-                $(document).click(function(e) {
-                    //
-                    // each mouse click updates these fields
-                    //
-                    $('#mouse_x').val(e.pageX);
-                    $('#mouse_y').val(e.pageY);
-                });
-                
-                $(window).resize(function(){
-                    //
-                    // fill in
-                    //
-                    $('#screen_x').val($(window).height());
-                    $('#screen_y').val($(window).width());
+        <label for="mouse_x">
+            Mouse Y:
+        </label>
+        <input type="text" id="mouse_y" size="4">
 
-                });
-            */            
-            
+        <label for="screen_x">
+            Screen X:
+        </label>
+        <input type="text" id="screen_x" size="4">
+
+        <label for="screen_y">
+            Screen Y:
+        </label>
+        <input type="text" id="screen_y" size="4">
+    </span>
+
+    {% endcomment %}
+    
+
+    {% comment %}
+    //
+    // this is a separate resize code that isn't used
+    //
+    $("window").resize(function () {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+        console.log('resize height set');
+    });
+    {% endcomment %}
+
+
+    {% comment %}             
+    //
+    // Django adds a field suffix of ':' to each field name.
+    // While there is a Django method to remove these, this is much easier.
+    // table head text is gone
+    //
+    $('th').each(function() {
+        //
+        // if the string lenght is 0, then the label is icon
+        //
+        var th = $(this);
+        if (th.text().length > 0) {
+            var th_text = th.text().replace(':','');
+            th.text(th_text);
+        }
+    }); {
+    {% endcomment %}
 
 </script>
-
-
 {% endblock%}

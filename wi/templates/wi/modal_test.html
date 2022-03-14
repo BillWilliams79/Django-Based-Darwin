@@ -1,0 +1,203 @@
+{% extends "wi/task_base.html" %}
+
+{% block HeadTitle %} WI: {% endblock %} 
+
+{% block PageTitle %}  modal Test {% endblock %} 
+
+{% block mainpagedisplay %}
+
+{% comment %} <!-- Button trigger modal -->
+<button type="button" class="task-delete"
+        style="border: none; background-color: white;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    <i class="fas fa-trash-alt"></i>
+</button>
+  
+  <!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to delete this task?
+                <br> <br>
+                Description: Get my mountain bike running
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark btn-sm">Delete Task</button>
+                <button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+ {% endcomment %}
+
+<div class="modal" id="staticBackdropLive" 
+    data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLiveLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>I will not close if you click outside me. Don't even try to press escape key.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="bd-example">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropLive">
+            Launch static backdrop modal
+        </button>
+    </div>
+
+    <!-- basic container. 
+        row grid
+        md breakpoint: 5 across gutter of 1 breaks to 2 across no gutter.
+
+    -->
+
+
+
+
+<div class="container-fluid mt-4">
+
+    <h5>
+        Bootstrap 5 Row Grid example
+    </h5>
+    <div class="row row-cols-2 row-cols-md-5 g-0 g-md-2">
+        <div class="col border bg-white">
+            <div class="p-4 border bg-light ">
+                padding 3 changes width/height of div. creates space between text/border
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                div
+            </div>
+        </div>
+
+        <div class="col invisible border bg-white">
+            <div class="p-3 border bg-light">
+                <p class="visible"> nobody knows i'm invisible </p>
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                P-3 all the way down Row column
+            </div>
+        </div>
+
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                Row column
+            </div>
+        </div>
+
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                {% block payload %}
+                    {% include "wi/card_base.html" %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                Row column
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                Row column
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                Row column
+            </div>
+        </div>
+
+        <div class="col border bg-white">
+            <div class="p-3 border bg-light">
+                Row column
+            </div>
+        </div>
+    </div>
+
+
+    <h5>
+        CSS Grid Area Example, styles.css
+    </h5>
+
+    <div class="wrapper_css"
+            style="">
+
+        <div class="item_a_css"
+                style="align-self: normal; justify-self: normal;">
+
+            <div class="meat">
+                <p> 
+                    item for a
+                </p>
+            </div>
+        </div>
+
+        <div class="item_b_css"
+                style="align-self: normal; justify-self: normal;">
+
+            <div class="meat">
+                <p> 
+                    item for b
+                </p>
+            </div>
+        </div>
+
+        <div class="item_c_css"
+                style="align-self: normal; justify-self: normal;">
+
+            <div class="meat">
+                <p> 
+                    item for c
+                </p>
+            </div>
+        </div>
+
+        <div class="item_d_css"
+                style="align-self: normal; justify-self: normal;">
+
+            <div class="meat">
+                <p> 
+                    item for d
+                </p>
+            </div>
+        </div>
+
+        <div class="item_e_css"
+                style="align-self: normal; justify-self: normal;">
+
+            <div class="meat">
+                <p> 
+                    item for e
+                </p>
+            </div>
+        </div>
+
+
+</div>
+{% endblock%}
+

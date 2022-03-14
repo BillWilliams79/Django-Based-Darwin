@@ -1,4 +1,6 @@
 from django.urls import path, register_converter
+from django.views.generic import TemplateView
+
 from datetime import datetime
 
 from . import views
@@ -37,4 +39,6 @@ urlpatterns = [
     path('domain', views.domain_multiedit, name='domain_multiedit'),
     path('month_calendarview', views.month_calendarview, name='month_calendarview'),
     path('day_calendarview/<yyyy-mm-dd:ymd_date>/', views.day_calendarview, name='day_calendarview'),
+    path('modal_test/', TemplateView.as_view(template_name='wi/modal_test.html'), name='modal_test'),
+    path('task_delete', views.task_delete, name='task_delete'),
  ]

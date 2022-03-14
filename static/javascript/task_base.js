@@ -15,9 +15,13 @@ $(document).ready(
         //
         // After grid is set, make visible
         //
-        console.log('unhide');
+        //console.log('unhide');
         $('html').css('visibility', 'visible');
     });
+
+
+
+
 
 //
 // app grid setup library function used in $(document).ready

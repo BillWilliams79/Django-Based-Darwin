@@ -1,0 +1,86 @@
+{% extends "wi/card_base" %}
+
+{% block card-title %}
+
+    <h5>
+        <a href="{% url 'wi:task_areafocus' area_obj.id %}"
+                style="text-decoration: none; color: black">
+
+            {{area_obj.name}}   
+
+        </a>
+
+        {% if area_form_list|length > 1 %}
+            <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right; height" value="{{area_obj.name}}"> 
+                <i class="fas fa-caret-down fa-lg"></i>
+            </button>
+            <button type="submit" name="navigate_up" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> 
+                <i class="fas fa-caret-up fa-lg"></i>
+            </button>
+        {% endif %}
+
+    </h5>
+
+{% endblock %}
+
+{% block card-text %}
+
+    {{ area_form.management_form }}
+
+    <table class='table' sytle="font-size: 14px">
+
+        <thead style="border:none;"> 
+            {% comment %}tr class="mt-1" style='font-size: 12px; font-family: Verdana, sans-serif;'>
+                {% for field in area_form.form.visible_fields %}
+                    {% if field.name == "area" %}
+                    {% else %}
+                        <th class="p-0 fw-normal">{{ field.label_tag }} </th>
+                    {% endif %}
+                {% endfor %}
+                <th class="p-0 fw-normal"><i class="fas fa-trash-alt"></i></th>
+                
+            </tr> {% endcomment %}
+        </thead>
+
+        <tbody style="border: none;">
+            {% for form in area_form %}
+                <tr class="pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
+
+                    {% for field in form.visible_fields %}
+                        <td class="p-0" style="border: none;">
+                            {{ field }}
+                        </td>
+                    {% endfor %}
+
+                    <td class="p-0" style="border: none;">
+                        {% comment %} <button type="submit" class="task-delete" style="border: none; background-color: white;" name="task_delete" value="{{form.instance.id}}"> <i class="fas fa-trash-alt"></i> </button> {% endcomment %}
+                        <button type="button" 
+                                class="task-delete"
+                                style="border: none; background-color: white;" 
+                                value="{{ form.instance.id }}"
+                                data-task-id="{{ form.instance.id }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                                                                                
+                    </td>
+                </tr>                         
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <span class="d-block d-sm-none">
+        <input type="submit" name="{{area_obj.name | lower}}" class='btn btn-dark btn' value="Update">
+    </span>
+
+    <span>
+        {% for form in area_form %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+        {% endfor %}
+    </span>
+
+{% endblock %}
