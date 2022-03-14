@@ -64,6 +64,17 @@
                 </button>
 
                 {% if area_form_list|length > 0 %}
+                    {% if show_priority %}
+                        <button type="submit" name="hide_priority" class='btn ms-2 btn-dark btn-sm' style="float: right"> 
+                            Priority Only
+                        </button>
+                    {% else %}
+                        <button type="submit" name="show_priority" class='btn ms-2 btn-dark btn-sm' style="float: right">
+                            Show All
+                        </button>
+                    {% endif %}
+
+
                     {% if show_done %}
                         <button type="submit" name="hide_done" class='btn btn-dark btn-sm' style="float: right"> 
                             Hide Done
@@ -118,7 +129,7 @@
                                     </h5>
                                 </div>
 
-                                <div class="card-text">
+                                <div class="card-text mt-3">
 
                                     {{ area_form.management_form }}
 

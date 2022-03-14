@@ -31,6 +31,9 @@ def task_worksheet(request):
     if not 'show_done' in request.session:
         request.session['show_done'] = False
 
+    if not 'show_priority' in request.session:
+        request.session['show_priority'] = False
+
     #
     # process domain navigation buttons.
     #
@@ -74,6 +77,14 @@ def task_worksheet(request):
         request.session['show_done'] = True
     elif 'hide_done' in request.POST:
         request.session['show_done'] = False
+
+    #
+    # process hide/show button
+    #
+    if 'show_priority' in request.POST:
+        request.session['show_priority'] = True
+    elif 'hide_priority' in request.POST:
+        request.session['show_priority'] = False
 
     #
     # process user order buttons (django-order-model library)
@@ -223,6 +234,11 @@ def task_worksheet(request):
     if not request.session['show_done']:
         qs = qs.filter(Q(completed__gt = retention_date) | Q(completed = None))
 
+    # no filter required to show all
+    if not request.session['show_priority']:
+        qs = qs.filter(priority = True)
+
+
     qs = qs.order_by('status', '-priority', '-updated')
 
     for area_obj in area_list:
@@ -239,7 +255,8 @@ def task_worksheet(request):
     return render(request, 'wi/task_worksheet.html', { 'area_form_list' : afl,
                                                         'domain_name' : render_domain.name,
                                                         'domain_count' : domains_length,
-                                                        'show_done' : request.session['show_done'], })
+                                                        'show_done' : request.session['show_done'],
+                                                        'show_priority' : request.session['show_priority'], })
 
 #
 # Area View
