@@ -9,11 +9,13 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">
+              Confirm Task Deletion
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          you pressed that button!
+          Do you want to delete this task?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -121,19 +123,6 @@
                                     {{ area_form.management_form }}
 
                                     <table class='table' sytle="font-size: 14px">
-
-                                        <thead style="border:none;"> 
-                                            {% comment %}tr class="mt-1" style='font-size: 12px; font-family: Verdana, sans-serif;'>
-                                                {% for field in area_form.form.visible_fields %}
-                                                    {% if field.name == "area" %}
-                                                    {% else %}
-                                                        <th class="p-0 fw-normal">{{ field.label_tag }} </th>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                <th class="p-0 fw-normal"><i class="fas fa-trash-alt"></i></th>
-                                                
-                                            </tr> {% endcomment %}
-                                        </thead>
 
                                         <tbody style="border: none;">
                                             {% for form in area_form %}
@@ -251,11 +240,7 @@
             //
             $(".delete-task-button").on("click", 
                 function(event) {
-
-                    console($(this)
-
-                    );
-
+                    console.log('starting ajax to delete item');    
                     $.ajax({
                         data: { 'csrfmiddlewaretoken': "{{ csrf_token }}",
                                 id : $(event.target).val(),},
@@ -266,7 +251,7 @@
                             //
                             // TODO: implement disable and hide of the removed item.
                             //
-                            console.log('target.nodeName: ' + 
+                            {% comment %}console.log('target.nodeName: ' + 
                                     event.target.nodeName); // prints Button
                                     
                             console.log('currentTarget.nodeName: ' + 
@@ -286,6 +271,8 @@
 
                             console.log('bg color: ' + 
                                 $(event.currentTarget).parent().css('background-color'));
+                            {% endcomment %}
+
 
 
                                     //$(event.target).css('background-color' : 'red');
@@ -293,7 +280,7 @@
                             //console.log($('ct.val(): ' + $(event.currentTarget).val());
                             //console.log(type(event.currentTarget));
                             //console.log(dir(event.currentTarget));
-                            alert("Delete good");
+                            alert("Delete suceeded");
                         },
                         // on error
                         error: function (response) {
