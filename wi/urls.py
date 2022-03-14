@@ -33,12 +33,13 @@ urlpatterns = [
     #
     # url patterns for task management
     #
-    path('task_worksheet', views.task_worksheet, name='task_worksheet'),
+    path('task_worksheet/', views.task_worksheet, name='task_worksheet'),
     path('areafocus/<int:pk>', views.area_focus, name='task_areafocus'),
-    path('area', views.area_multiedit, name='area_multiedit'),
-    path('domain', views.domain_multiedit, name='domain_multiedit'),
-    path('month_calendarview', views.month_calendarview, name='month_calendarview'),
+    path('area/', views.area_multiedit, name='area_multiedit'),
+    path('domain/', views.domain_multiedit, name='domain_multiedit'),
+    path('month_calendarview/', views.month_calendarview, name='month_calendarview'),
     path('day_calendarview/<yyyy-mm-dd:ymd_date>/', views.day_calendarview, name='day_calendarview'),
     path('modal_test/', TemplateView.as_view(template_name='wi/modal_test.html'), name='modal_test'),
-    path('task_delete', views.task_delete, name='task_delete'),
+    path('task_delete/', views.task_delete, name='task_delete'),
+    path('api/', views.api_overview, name='api_overview' ),
  ]

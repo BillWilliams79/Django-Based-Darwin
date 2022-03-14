@@ -627,4 +627,5 @@ def task_delete(request):
     else:
         return JsonResponse(status=400)
 
-
+def api_overview(request):
+    return JsonResponse("API BASE POINT", safe=False)
