@@ -26,7 +26,7 @@ class AreaFocusForm(ModelForm):
     # placing area here allows us to override its query set in the view code
     # to limit based on created_by field
     #     
-    area = ModelChoiceField(queryset = area.objects.all())
+    #area = ModelChoiceField(queryset = area.objects.all())
     #
     # for this form, display the completed field but show only the date.
     # This is the best examplar to date to override the model field definitions.
@@ -42,7 +42,6 @@ class AreaFocusForm(ModelForm):
         model = task
         fields = ['priority', 'status', 'description', 'completed' ]
         widgets = {
-           # 'priority' : CheckboxInput(attrs={'class': 'darwin_text',}),
 
             'status' : CheckboxInput(attrs={'class' : 'task-status',}),
 

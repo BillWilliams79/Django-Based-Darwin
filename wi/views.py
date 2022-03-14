@@ -284,8 +284,8 @@ def area_focus(request, pk):
     # Area focus must not disply choice options that belong to other users. Forms enable
     # us to override the queryset selecting the values to be displayed.
     #
-    AreaFocusForm.base_fields['area'].queryset = area.objects.filter(created_by = request.user
-                                                                ).exclude(hide=True)
+    #AreaFocusForm.base_fields['area'].queryset = area.objects.filter(created_by = request.user
+    #                                                            ).exclude(hide=True)
 
     area_formset_factory = modelformset_factory(task,
                                                 form=AreaFocusForm,
