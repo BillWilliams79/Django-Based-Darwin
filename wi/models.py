@@ -102,6 +102,12 @@ class area(OrderedModel):
         #
         if not self.id:
             self.created = timezone.now()
+            #
+            # move to top of list...
+            #
+            retval = super(area, self).save(*args, **kwargs)
+            self.top()
+            return retval
         
         self.updated = timezone.now()
         
