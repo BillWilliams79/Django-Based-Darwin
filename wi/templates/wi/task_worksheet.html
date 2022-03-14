@@ -86,78 +86,9 @@
 
                     {% for area_obj, area_form in area_form_list %}
 
-                        <div class="card col" style="font-family: Verdana, serif;">
-
-                            <div class="card-body p-2">
-
-                                <div class="card-title" >
-                                    <h5>
-                                        <a href="{% url 'wi:task_areafocus' area_obj.id %}"
-                                                style="text-decoration: none; color: black">
-
-                                                {{area_obj.name}}   
-                                                {% comment %} <i class="fas fa-edit fa-xs"></i> {% endcomment %}
-
-                                        </a>
-
-                                        {% if area_form_list|length > 1 %}
-                                            <button type="submit" name="navigate_down" class='btn btn-dark btn-sm' style="float: right; height" value="{{area_obj.name}}"> <i class="fas fa-caret-down fa-lg"></i> </button>
-                                            <button type="submit" name="navigate_up" class='btn btn-dark btn-sm' style="float: right" value="{{area_obj.name}}"> <i class="fas fa-caret-up fa-lg"></i> </button>
-                                        {% endif %}
-                                    </h5>
-                                </div>
-
-                                <div class="card-text mt-3">
-
-                                    {{ area_form.management_form }}
-
-                                    <table class='table' sytle="font-size: 14px">
-
-                                        <tbody style="border: none;">
-                                            {% for form in area_form %}
-                                                <tr class="pt-1" style='font-size: 14px; font-family: Verdana, sans-serif;'>
-
-                                                    {% for field in form.visible_fields %}
-                                                        <td class="p-0" style="border: none;">
-                                                            {{ field }}
-                                                        </td>
-                                                    {% endfor %}
-
-                                                    <td class="p-0" style="border: none;">
-                                                        {% comment %} <button type="submit" class="task-delete" style="border: none; background-color: white;" name="task_delete" value="{{form.instance.id}}"> <i class="fas fa-trash-alt"></i> </button> {% endcomment %}
-                                                        <button type="button" 
-                                                                class="task-delete"
-                                                                style="border: none; background-color: white;" 
-                                                                value="{{ form.instance.id }}"
-                                                                data-task-id="{{ form.instance.id }}"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#staticBackdrop">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
-                                                                                                                
-                                                    </td>
-                                                </tr>                         
-                                            {% endfor %}
-                                        </tbody>
-
-                                    </table>
-
-                                    <span class="d-block d-sm-none">
-                                        <input type="submit" name="{{area_obj.name | lower}}" class='btn btn-dark btn' value="Update">
-                                    </span>
-
-                                    <span>
-                                        {% for form in area_form %}
-                                            {% for hidden in form.hidden_fields %}
-                                                {{ hidden }}
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </span>
-
-                                </div>
-
-                            </div>
-                        </div>
+                        {% block navbar_block %}
+                            {% include "wi/card_base" %}
+                        {% endblock %}
                         
                     {% endfor %}
                 </div>
@@ -165,27 +96,6 @@
         </form>
     {% endif %}
 
-    <div class="modal" id="staticBackdrop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                  Confirm Task Deletion
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Do you want to delete this task?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="delete-task-button btn btn-danger btn-sm" data-bs-dismiss="modal" value="">
-                Delete Task
-              </button>
-              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            </div>
-          </div>
-        </div>
-    </div>
 </div>
 
 
