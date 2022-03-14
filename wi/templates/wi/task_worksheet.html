@@ -5,28 +5,6 @@
 {% block PageTitle %}  {% endblock %} 
 
 {% block mainpagedisplay %}
-<div class="modal" id="staticBackdrop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">
-              Confirm Task Deletion
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Do you want to delete this task?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="delete-task-button btn btn-primary" data-bs-dismiss="modal" value="">
-            Delete Task
-          </button>
-        </div>
-      </div>
-    </div>
-</div>
-
 <div class="container-fluid">
     {% if not domain_count %}
         <form action="" method="post">
@@ -186,9 +164,29 @@
         </form>
     {% endif %}
 
+    <div class="modal" id="staticBackdrop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                  Confirm Task Deletion
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Do you want to delete this task?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="delete-task-button btn btn-danger btn-sm" data-bs-dismiss="modal" value="">
+                Delete Task
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+    </div>
 </div>
 
-<!-- Modal -->
 
 
 <script type="text/javascript">
@@ -224,29 +222,7 @@
                 $(".delete-task-button").val(task_id);
             });
 
-            $("tr").on('click', function(event) {
-                console.log('go red');
-                console.log(event.currentTarget.tagName);
-                if (this.style.color = "red") {
-                    this.style.color = "blue";
-                } else {
-                    this.style.color = "red";
-                }
-            });
-
-
-{% comment %}             ).css('background-color', 'red');
-
-            $( document.body ).click(function() {
-                $( "div" ).each(function( i ) {
-                  if ( this.style.color !== "blue" ) {
-                    this.style.color = "blue";
-                  } else {
-                    this.style.color = "";
-                  }
-                });
-              });
- {% endcomment %}            //
+            //
             // task delete: button handler on modal that executes ajax to delete button.
             //
             $(".delete-task-button").on("click", 
@@ -257,43 +233,20 @@
                                 id : $(event.target).val(),},
                         type: "POST",
                         url: "{% url 'wi:task_delete' %}",
+                        
+                        //
                         // on success
+                        //
                         success: function (response) {
                             //
-                            // TODO: implement disable and hide of the removed item.
+                            // since we can't redraw the screen, reload. Sad, why even ajax bro.
                             //
-                            {% comment %}console.log('target.nodeName: ' + 
-                                    event.target.nodeName); // prints Button
-                                    
-                            console.log('currentTarget.nodeName: ' + 
-                                    event.currentTarget.nodeName); // returns Button
-
-                            console.log('cT.nodeType: ' + 
-                                    event.currentTarget.nodeType); //returns 1. A 1 equals element type like p or div
-
-                            console.log('cT.nodeValue: ' + 
-                                    event.currentTarget.nodeValue); // 
-
-                            console.log('cT.baseURI: ' + 
-                                    event.currentTarget.baseURI); //returns the current url
-
-                            console.log('bg color: ' + 
-                                $(event.currentTarget).parent().css('background-color'));
-
-                            console.log('bg color: ' + 
-                                $(event.currentTarget).parent().css('background-color'));
-                            {% endcomment %}
-
-
-
-                                    //$(event.target).css('background-color' : 'red');
-                            //learning$(event.target).css('background-color': 'red');
-                            //console.log($('ct.val(): ' + $(event.currentTarget).val());
-                            //console.log(type(event.currentTarget));
-                            //console.log(dir(event.currentTarget));
-                            alert("Delete suceeded");
+                            location.reload();
                         },
+                        
+                        //
                         // on error
+                        //
                         error: function (response) {
                             // alert the error if any error occured
                             alert("delete bad");
@@ -325,8 +278,6 @@
             $(".task-status").css('width', '48px');
             $("thead th:nth-child(2)").css('width', '48px');
             $("thead th:nth-child(3)").css('width', '100%');
-            //$("tr td:nth-child(3)" ).addClass('me-1');
-            //$("tr td:nth-child(4)" ).addClass('ms-1');
             
             //
             // task complete strikethrough handler, first when user clicks.
@@ -347,8 +298,6 @@
 
             });
 
-
-
             //
             // Set inital strikethrough state for task.description
             //
@@ -365,162 +314,38 @@
                 $('#' + tdi).css('text-decoration', this.checked ? 'line-through' : 'none');
             });
 
-
-
-
-
     }); // $(document).ready(....
 
 
-//########################################################################
-//
-// Commented code samples section to be removed after at least one commit.
-//
-
-    {% comment %}
+    {% comment %}    
     //
-    // vanilla JS that brings focus to your modal, didn't wokr becuase of the Ids
+    // test code playing with toggels and what not
     //
-    var myModal = document.getElementById('.modal');
-    var myInput = document.getElementById('.delete-task-button ');
+    $("tr").on('click', function(event) {
 
-    myModal.addEventListener('.modal', function () {
-        //myInput.focus();
-        //console.log('event firing for modal or delete button');
-    });
-    {% endcomment %}
+        console.log(event.currentTarget.tagName);
+        var s = this.style;
 
 
-
-    {% comment %}
-    //
-    // testing click handler before using modal for delete.
-    //
-    $(".task-delete").on("click", function () {
-        alert("Would you like to delete task #" + this.value + "?");
-        return false;
-    }); 
-    {% endcomment %}
-
-
-    {% comment %}             
-    //
-    // attempting set a bottom border in new input lines and adjust scroll heights
-    // stopped before could make the scroll height logic work properly
-    //
-    $(".task-description").css('border-bottom', function() {
-        //$(this).css({'border-top': 'none',
-        //            'border-right': 'none',
-        //            'border-left': 'none'});
-
-        if ($(this).text() == "") {
-            //$(this).css('border-bottom', '1px solid black');
-            // add a bottom border causes the height to increase by one and this has to be accounted for.
-            tsh = this.scrollHeight;
-            tsh++;
-            this.style.height = tsh + "px";
+        //console.log('this color: ' + $(this).css("color"));
+        if (s.color == "red") {
+            s.color = "blue";
+            console.log('go blue: ' + s.color);
         } else {
-            //nothing for now
-            //$(this).css('border-bottom', 'none');
-        }
-    });
-    {% endcomment %}        
-
-
-    {% comment %}
-    //
-    // trying to cetner vert/horiz the checkbox inthe card display to no avail.
-    // individually these operations worked as advertized but the checkbox never moved.
-    //
-    $(".task-status").parent().css('display', 'block');
-    $(".task-status").css('height', '100%');
-    $(".task-status").css('font-size', '12px');
-    $(".task-status").css('display', 'block');
-    $(".task-status").parent().css('text-align', 'center');
-    $(".task-status").css('text-align', 'center');
-    $(".task-status").parent().css('vertical-align', 'middle');
-    {% endcomment %}        
-
-
-    {% comment %}
-    //
-    // Ajax learning: code to set mouse and screen data to inputs on the screen.
-    // inputs identifed by their IDs are below
-    //            
-    $(document).click(function(event) {
-        //
-        // each mouse click updates these fields
-        //
-        $('#mouse_x').val(event.pageX);
-        $('#mouse_y').val(event.pageY);
-    });
-        
-    $(window).resize(function(){
-        //
-        // fill in window sizes
-        //
-        $('#screen_x').val($(window).height());
-        $('#screen_y').val($(window).width());
-        // document sizes
-        $('#document_x').val($(document).height());
-        $('#document_y').val($(document).width());
-
+            s.color = "red";
+            console.log('go red: ' + s.color);               }
     });
 
-    <span style="font-size: 10px;">
-        <label for="mouse_x">
-            Mouse X:
-        </label>
-        <input type="text" id="mouse_x" size="4">
-
-        <label for="mouse_x">
-            Mouse Y:
-        </label>
-        <input type="text" id="mouse_y" size="4">
-
-        <label for="screen_x">
-            Screen X:
-        </label>
-        <input type="text" id="screen_x" size="4">
-
-        <label for="screen_y">
-            Screen Y:
-        </label>
-        <input type="text" id="screen_y" size="4">
-    </span>
-
+    $( document.body ).click(function() {
+        $( "div" ).each(function( i ) {
+          if ( this.style.color !== "blue" ) {
+            this.style.color = "blue";
+          } else {
+            this.style.color = "";
+          }
+        });
+      });
+      
     {% endcomment %}
-    
-
-    {% comment %}
-    //
-    // this is a separate resize code that isn't used
-    //
-    $("window").resize(function () {
-        this.style.height = "auto";
-        this.style.height = (this.scrollHeight) + "px";
-        console.log('resize height set');
-    });
-    {% endcomment %}
-
-
-    {% comment %}             
-    //
-    // Django adds a field suffix of ':' to each field name.
-    // While there is a Django method to remove these, this is much easier.
-    // table head text is gone
-    //
-    $('th').each(function() {
-        //
-        // if the string lenght is 0, then the label is icon
-        //
-        var th = $(this);
-        if (th.text().length > 0) {
-            var th_text = th.text().replace(':','');
-            th.text(th_text);
-        }
-    }); {
-    {% endcomment %}
-
 </script>
 {% endblock%}
