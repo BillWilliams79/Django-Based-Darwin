@@ -11,10 +11,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as rest_reverse
 from rest_framework import generics
-from wi.serializers import task_serializer, area_serializer, area_class_serializer, domain_class_serializer, task_class_serializer
+from wi.serializers import area_class_serializer, domain_class_serializer, task_class_serializer
 from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework import permissions
-from wi.permissions import IsOwnerOrReadOnly
 
 from django.contrib import messages
 from django.db.models import Max
@@ -649,126 +648,7 @@ def api_root(request, format=None):
         'Areas' : rest_reverse('wi:rest_areas', request=request, format=format),
         'Tasks' : rest_reverse('wi:rest_tasks', request=request, format=format),
     })
-    
-# task REST CODE
-#
-# task: LIST ALL
-#
-@api_view(['GET'])
-def task_list(request):
 
-    qs = task.objects.all()
-    serializer = task_serializer(qs, many=True, context={'request': request})
-    return Response(serializer.data)
-
-#
-# task: VIEW SINGLE
-#
-@api_view(['GET'])
-def task_view(request, pk):
-
-    try:
-        the_task = task.objects.get(pk=pk)
-    except task.DoesNotExist:
-        raise Http404
-
-    serializer = task_serializer(the_task, context={'request': request})
-    return Response(serializer.data)
-
-#
-# task: CREATE SINGLE
-#
-@api_view(['POST'])
-def task_create(request):
-
-    serializer = task_serializer(data=request.data)
-
-    if serializer.is_valid():
-        serializer.save()
-    else:
-        #todo some error.
-        pass
-    
-    return Response(serializer.data)
-
-#
-# task: UPDATE SINGLE
-#
-@api_view(['POST'])
-def task_update(request, pk):
-
-    try:
-        the_task = task.objects.get(pk=pk)
-    except task.DoesNotExist:
-        raise Http404
-
-    serializer = task_serializer(instance = the_task,
-                                    data=request.data)
-
-    if serializer.is_valid():
-        # update the_task with new data
-        serializer.save()
-    else:
-        pass
-    
-    return Response(serializer.data)
-
-#
-# task: DELETE SINGLE
-#
-@api_view(['DELETE'])
-def task_delete(request, pk):
-
-    try:
-        the_task = task.objects.get(pk=pk)
-    except task.DoesNotExist:
-        raise Http404
-
-    the_task.delete()
-
-    return Response('Task successfully deleted.')
-
-# Area REST code
-#
-# view single area
-#
-@api_view(['GET'])
-def area_view(request, pk):
-
-    try:
-        the_area = area.objects.get(pk=pk)
-    except area.DoesNotExist:
-        raise Http404
-
-    serializer = area_serializer(the_area)
-    return Response(serializer.data)
-
-
-# Class based view for Area data object.
-#
-# a variety of views, all using area_class_serializer
-#
-#works
-class area_ListAPIView(generics.ListAPIView):
-    queryset = area.objects.all()
-    serializer_class = area_class_serializer
-
-class area_RetrieveAPIView(generics.RetrieveAPIView):
-    queryset = area.objects.filter()
-    serializer_class = area_class_serializer
-
-# works
-class area_ListCreateAPIView(generics.ListCreateAPIView):
-    #queryset = area.objects.all()
-    def get_queryset(self):
-        user = self.request.user
-        return area.objects.filter(created_by = user)
-    serializer_class = area_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    #example of how to hook perform_create
-    #def perform_create(self, serializer):
-    #    serializer.save(owner=self.request.user)
 
 #
 # area: List or Create one or more areas
@@ -778,8 +658,14 @@ class area_ListCreateAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         return area.objects.filter(created_by = user)
+
+    #example of how to hook perform_create
+    #def perform_create(self, serializer):
+        # serializer.save(owner=self.request.user)
+
     serializer_class = area_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
+
 #
 # Read, Update, Delete a single area (no create, no lists)
 #
@@ -790,8 +676,7 @@ class area_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         return area.objects.filter(created_by = user)
 
     serializer_class = area_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
+    permission_classes = [permissions.IsAuthenticated]
 
 
 #
@@ -803,7 +688,8 @@ class domain_ListCreateAPIView(generics.ListCreateAPIView):
         user = self.request.user
         return domain.objects.filter(created_by = user)
     serializer_class = domain_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
+
 #
 # Read, Update, Delete a single domain (no create, no lists)
 #
@@ -814,8 +700,7 @@ class domain_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         return domain.objects.filter(created_by = user)
 
     serializer_class = domain_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
+    permission_classes = [permissions.IsAuthenticated]
 
 
 #
@@ -827,7 +712,8 @@ class task_ListCreateAPIView(generics.ListCreateAPIView):
         user = self.request.user
         return task.objects.filter(created_by = user)
     serializer_class = task_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
+
 #
 # Read, Update, Delete a single task (no create, no lists)
 #
@@ -838,4 +724,4 @@ class task_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         return task.objects.filter(created_by = user)
 
     serializer_class = task_class_serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
