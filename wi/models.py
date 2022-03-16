@@ -114,7 +114,7 @@ class area(OrderedModel):
         return super(area, self).save(*args, **kwargs)
 
     def __str__(self):
-        return(f"{self.name}")
+        return(f"{self.id}")
 
 
 class task(models.Model):
