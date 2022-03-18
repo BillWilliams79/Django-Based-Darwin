@@ -1,4 +1,3 @@
-#from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
 from wi.models import domain, area, task
@@ -41,7 +40,7 @@ class area_class_serializer(serializers.ModelSerializer):
 class task_class_serializer(serializers.ModelSerializer):
     
     created_by = serializers.StringRelatedField()
-    
+
     area = serializers.HyperlinkedRelatedField(
         many=False,
         read_only=True,

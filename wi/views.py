@@ -660,7 +660,7 @@ def api_root(request, format=None):
 #
 # domain: List or Create one or more domains
 #
-class domain_ListCreateAPIView(generics.ListCreateAPIView):
+class rest_domains(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
@@ -671,7 +671,7 @@ class domain_ListCreateAPIView(generics.ListCreateAPIView):
 #
 # Read, Update, Delete a single domain (no create, no lists)
 #
-class domain_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class rest_domain(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
@@ -684,7 +684,7 @@ class domain_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
 #
 # area: List or Create one or more areas
 #
-class area_ListCreateAPIView(generics.ListCreateAPIView):
+class rest_areas(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
@@ -702,7 +702,7 @@ class area_ListCreateAPIView(generics.ListCreateAPIView):
 #
 # Read, Update, Delete a single area (no create, no lists)
 #
-class area_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class rest_area(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
@@ -715,7 +715,7 @@ class area_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 #
 # task: List or Create one or more tasks
 #
-class task_ListCreateAPIView(generics.ListCreateAPIView):
+class rest_tasks(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
@@ -727,7 +727,7 @@ class task_ListCreateAPIView(generics.ListCreateAPIView):
 #
 # Read, Update, Delete a single task (no create, no lists)
 #
-class task_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class rest_task(generics.RetrieveUpdateDestroyAPIView):
     
     def get_queryset(self):
         user = self.request.user
@@ -740,7 +740,7 @@ class task_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 #
 # User: List or Create one or more
 #
-class user_ListCreateAPIView(generics.ListCreateAPIView):
+class rest_users(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return User.objects.all()
@@ -751,7 +751,7 @@ class user_ListCreateAPIView(generics.ListCreateAPIView):
 #
 # Read, Update, Delete a single User (no create, no lists)
 #
-class user_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class rest_user(generics.RetrieveUpdateDestroyAPIView):
     
     def get_queryset(self):
         return User.objects.all()
@@ -762,7 +762,7 @@ class user_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 #
 # profile: List or Create one or more 
 #
-class profile_ListCreateAPIView(generics.ListCreateAPIView):
+class rest_profiles(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Profile.objects.all()
@@ -774,7 +774,7 @@ class profile_ListCreateAPIView(generics.ListCreateAPIView):
 #
 # Read, Update, Delete a single profile (no create, no lists)
 #
-class profile_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class rest_profile(generics.RetrieveUpdateDestroyAPIView):
     
     def get_queryset(self):
         return Profile.objects.all()

@@ -36,17 +36,17 @@ rest_api_patterns = [
      # Django REST Framework APIs
      #
      path('', views.api_root, name='api_root' ),
-     path('domains/', views.domain_ListCreateAPIView.as_view(), name='rest_domains' ),
-     path('domain/<int:pk>', views.domain_RetrieveUpdateDestroyAPIView.as_view(), name='rest_domain' ),
-     path('areas/', views.area_ListCreateAPIView.as_view(), name='rest_areas' ),
-     path('area/<int:pk>', views.area_RetrieveUpdateDestroyAPIView.as_view(), name='rest_area' ),
-     path('tasks/', views.task_ListCreateAPIView.as_view(), name='rest_tasks' ),
-     path('task/<int:pk>', views.task_RetrieveUpdateDestroyAPIView.as_view(), name='rest_task' ),
+     path('domains/', views.rest_domains.as_view(), name='rest_domains' ),
+     path('domain/<int:pk>', views.rest_domain.as_view(), name='rest_domain' ),
+     path('areas/', views.rest_areas.as_view(), name='rest_areas' ),
+     path('area/<int:pk>', views.rest_area.as_view(), name='rest_area' ),
+     path('tasks/', views.rest_tasks.as_view(), name='rest_tasks' ),
+     path('task/<int:pk>', views.rest_task.as_view(), name='rest_task' ),
 
-     #path('users/', views.user_ListCreateAPIView.as_view(), name='rest_users' ),
-     #path('user/<int:pk>', views.user_RetrieveUpdateDestroyAPIView.as_view(), name='rest_user' ),
-     #path('profiles/', views.profile_ListCreateAPIView.as_view(), name='rest_profiles' ),
-     #path('profile/<int:pk>', views.profile_RetrieveUpdateDestroyAPIView.as_view(), name='rest_profile' ),
+     #path('users/', views.rest_users.as_view(), name='rest_users' ),
+     #path('user/<int:pk>', views.rest_user.as_view(), name='rest_user' ),
+     #path('profiles/', views.rest_profiles.as_view(), name='rest_profiles' ),
+     #path('profile/<int:pk>', views.rest_profile.as_view(), name='rest_profile' ),
 ]
 
 
