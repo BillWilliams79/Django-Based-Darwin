@@ -22,10 +22,10 @@ class DateConverter:
 
     def to_python(self, value):
         mydate = datetime.strptime(value, '%Y-%m-%d')
-        print(f'dataconverter.to_python: {mydate}')
         return mydate
 
     def to_url(self, value):
+
         return value
 
 register_converter(DateConverter, 'yyyy-mm-dd')
@@ -33,7 +33,7 @@ register_converter(DateConverter, 'yyyy-mm-dd')
 
 rest_api_patterns = [
      #
-     # Django Rest Framework APIs
+     # Django REST Framework APIs
      #
      path('', views.api_root, name='api_root' ),
      path('domains/', views.domain_ListCreateAPIView.as_view(), name='rest_domains' ),
@@ -42,47 +42,37 @@ rest_api_patterns = [
      path('area/<int:pk>', views.area_RetrieveUpdateDestroyAPIView.as_view(), name='rest_area' ),
      path('tasks/', views.task_ListCreateAPIView.as_view(), name='rest_tasks' ),
      path('task/<int:pk>', views.task_RetrieveUpdateDestroyAPIView.as_view(), name='rest_task' ),
+
+     #path('users/', views.user_ListCreateAPIView.as_view(), name='rest_users' ),
+     #path('user/<int:pk>', views.user_RetrieveUpdateDestroyAPIView.as_view(), name='rest_user' ),
+     #path('profiles/', views.profile_ListCreateAPIView.as_view(), name='rest_profiles' ),
+     #path('profile/<int:pk>', views.profile_RetrieveUpdateDestroyAPIView.as_view(), name='rest_profile' ),
 ]
+
 
 urlpatterns = [
 
     #
     # url patterns for task management
     #  
-    path('task_worksheet/',
-         views.task_worksheet,
-         name='task_worksheet'),
-    
-    path('areafocus/<int:pk>',
-         views.area_focus,
-         name='task_areafocus'),
-    
-    path('area/',
-         views.area_multiedit,
-         name='area_multiedit'),
-    
-    path('domain/',
-         views.domain_multiedit,
-         name='domain_multiedit'),
-    
-    path('month_calendarview/',
-         views.month_calendarview,
-         name='month_calendarview'),
-    
-    path('day_calendarview/<yyyy-mm-dd:ymd_date>/',
-         views.day_calendarview,
-         name='day_calendarview'),
-    
-    path('modal_test/',
-         TemplateView.as_view(template_name='wi/modal_test.html'),
-         name='modal_test'),
-    
-    path('task_delete/',
-         views.task_delete,
-         name='task_delete'),
+    path('task_worksheet/', views.task_worksheet, name='task_worksheet'),
+    path('areafocus/<int:pk>', views.area_focus, name='task_areafocus'),
+    path('area/', views.area_multiedit, name='area_multiedit'),
+    path('domain/', views.domain_multiedit, name='domain_multiedit'),
+    path('month_calendarview/', views.month_calendarview, name='month_calendarview'),
+    path('day_calendarview/<yyyy-mm-dd:ymd_date>/', views.day_calendarview, name='day_calendarview'),
+    #
+    # AJAX URLs
+    #
+    path('task_delete/', views.task_delete, name='task_delete'),
+
+    #
+    # debug code
+    #
+    path('modal_test/', TemplateView.as_view(template_name='wi/modal_test.html'), name='modal_test'),
  
     #
-    # link the rest API patterns
+    # link REST API patterns
     #
     path('api/', include(rest_api_patterns)),
  ]

@@ -35,5 +35,15 @@
             {% endif %}
         </ul>
 
+        {% if user.is_authenticated %}
+        <h4>RESTful API</h4>
+        <ul>
+                <li><a href="{% url 'wi:api_root' %}">REST API root</a></li>
+                <li><a href="{% url 'wi:rest_domains' %}">REST Domains</a></li>
+                <li><a href="{% url 'wi:rest_areas' %}">REST Areas</a></li>
+                <li><a href="{% url 'wi:rest_tasks' %}">REST Tasks</a></li>
+        </ul>
+        {% endif %}
+
 </div>
 {% endblock%}

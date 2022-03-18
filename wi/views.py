@@ -7,18 +7,20 @@ from django.utils import timezone
 from .models import domain, area, task
 from django.http import JsonResponse
 import datetime as dt
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as rest_reverse
 from rest_framework import generics
-from wi.serializers import area_class_serializer, domain_class_serializer, task_class_serializer
+from wi.serializers import area_class_serializer, domain_class_serializer, task_class_serializer, user_class_serializer, profile_class_serializer
 from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework import permissions
 
 from django.contrib import messages
 from django.db.models import Max
+from django.contrib.auth.models import User
 
 from .forms import DomainMultiEditForm, AreaMultiEditForm, WorkSheetForm, AreaFocusForm
+from users.models import Profile
 
 
 #
@@ -634,20 +636,49 @@ def task_delete(request):
     else:
         return JsonResponse(status=400)
 
-
+##############################################################################
+#
 # RESTful API
 # functional definitions (non-class)
 #
 # API ROOT
 #
 @api_view(['GET'])
+@permission_classes([permissions.AllowAny])
 def api_root(request, format=None):
+    print(f'api root: {request.user}')
     return Response({
         'Application' : 'Darwin',
         'Domains' : rest_reverse('wi:rest_domains', request=request, format=format),
         'Areas' : rest_reverse('wi:rest_areas', request=request, format=format),
         'Tasks' : rest_reverse('wi:rest_tasks', request=request, format=format),
+        #'User' : rest_reverse('wi:rest_users', request=request, format=format),
+        #'Profile' : rest_reverse('wi:rest_profiles', request=request, format=format),
     })
+    
+
+#
+# domain: List or Create one or more domains
+#
+class domain_ListCreateAPIView(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        user = self.request.user
+        return domain.objects.filter(created_by = user)
+    serializer_class = domain_class_serializer
+    permission_classes = [permissions.IsAuthenticated]
+
+#
+# Read, Update, Delete a single domain (no create, no lists)
+#
+class domain_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+    def get_queryset(self):
+        user = self.request.user
+        return domain.objects.filter(created_by = user)
+
+    serializer_class = domain_class_serializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 #
@@ -680,30 +711,6 @@ class area_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 #
-# domain: List or Create one or more domains
-#
-class domain_ListCreateAPIView(generics.ListCreateAPIView):
-
-    def get_queryset(self):
-        user = self.request.user
-        return domain.objects.filter(created_by = user)
-    serializer_class = domain_class_serializer
-    permission_classes = [permissions.IsAuthenticated]
-
-#
-# Read, Update, Delete a single domain (no create, no lists)
-#
-class domain_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-
-    def get_queryset(self):
-        user = self.request.user
-        return domain.objects.filter(created_by = user)
-
-    serializer_class = domain_class_serializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-#
 # task: List or Create one or more tasks
 #
 class task_ListCreateAPIView(generics.ListCreateAPIView):
@@ -718,10 +725,61 @@ class task_ListCreateAPIView(generics.ListCreateAPIView):
 # Read, Update, Delete a single task (no create, no lists)
 #
 class task_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-
+    
     def get_queryset(self):
         user = self.request.user
         return task.objects.filter(created_by = user)
 
     serializer_class = task_class_serializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+#
+# User: List or Create one or more
+#
+class user_ListCreateAPIView(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        return User.objects.all()
+
+    serializer_class = user_class_serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#
+# Read, Update, Delete a single User (no create, no lists)
+#
+class user_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    
+    def get_queryset(self):
+        return User.objects.all()
+
+    serializer_class = user_class_serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#
+# profile: List or Create one or more 
+#
+class profile_ListCreateAPIView(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        return Profile.objects.all()
+
+    serializer_class = profile_class_serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#
+# Read, Update, Delete a single profile (no create, no lists)
+#
+class profile_RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    
+    def get_queryset(self):
+        return Profile.objects.all()
+
+    serializer_class = profile_class_serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+
+
+
+
