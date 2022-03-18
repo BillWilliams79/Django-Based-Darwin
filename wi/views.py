@@ -696,6 +696,8 @@ class area_ListCreateAPIView(generics.ListCreateAPIView):
 
     serializer_class = area_class_serializer
     permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['domain', 'hide']
+
 
 #
 # Read, Update, Delete a single area (no create, no lists)
@@ -720,6 +722,7 @@ class task_ListCreateAPIView(generics.ListCreateAPIView):
         return task.objects.filter(created_by = user)
     serializer_class = task_class_serializer
     permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['priority', 'status', 'area']
 
 #
 # Read, Update, Delete a single task (no create, no lists)
@@ -766,6 +769,7 @@ class profile_ListCreateAPIView(generics.ListCreateAPIView):
 
     serializer_class = profile_class_serializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 #
 # Read, Update, Delete a single profile (no create, no lists)
