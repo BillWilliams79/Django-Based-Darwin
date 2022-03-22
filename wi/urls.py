@@ -69,7 +69,8 @@ urlpatterns = [
     #
     # debug code
     #
-    path('modal_test/', TemplateView.as_view(template_name='wi/modal_test.html'), name='modal_test'),
+    #path('edify/', TemplateView.as_view(template_name='wi/edify.html'), name='edify'),
+    #path('edify/js', TemplateView.as_view(template_name='wi/edify_js.html'), name='edify'),
  
     #
     # link REST API patterns

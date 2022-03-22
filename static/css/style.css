@@ -1,3 +1,4 @@
+
 .darwin_text {
     font-size: 12px;
     border: none;
@@ -64,22 +65,11 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: 10px;
-    /* grid-auto-rows: 100px; */
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Box_Alignment_in_CSS_Grid_Layout */
     grid-template-areas:
       "a a a a a a a a"
       "b b c c c c c c"
       "b b d d d d e e"
       "b b d d d d e e";
-/*
-      "a a a a b b b b"
-      "a a a a b b b b"
-      "c c c c d d d d"
-      "c c c c d d d d";*/
-
-    /* align items makes the box size dynamic instead of stretch
-    align-items: start; */
-    /*border: 1px solid green;*/
   }
 
   .item_a_css {
@@ -107,3 +97,6 @@
   .meat {
       border: 1px solid orange;
   }
+
+
+ 
